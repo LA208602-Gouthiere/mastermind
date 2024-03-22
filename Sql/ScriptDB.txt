@@ -1,0 +1,2 @@
+// Ecrire ici le SCRIPT qui crée la base de donnée
+// C'est à faire même si la DB est créée dans le code

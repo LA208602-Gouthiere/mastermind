@@ -1,0 +1,13 @@
+{
+    "files.associations": {
+        "options.h": "c",
+        "ecran.h": "c",
+        "stdlib.h": "c",
+        "clavier.h": "c",
+        "unistd.h": "c",
+        "ncurses.h": "c",
+        "mots.h": "c",
+        "score.h": "c"
+    },
+    "files.encoding": "utf8"
+}

@@ -1,0 +1,83 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "cppbuild",
+            "label": "Compiler le projet complet",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g",
+                "${workspaceFolder}/Sources/clavier.c",
+                "${workspaceFolder}/Sources/ecran.c",
+                "${workspaceFolder}/Sources/mots.c",
+                "${workspaceFolder}/Sources/partie.c",
+                "${workspaceFolder}/Sources/score.c",
+                "${workspaceFolder}/mastermind.c",
+                "-I",
+                "/usr/include/mariadb",
+                "-I",
+                "/usr/include/mariadb/mysql",
+                "-o",
+                "${workspaceFolder}/mastermind",
+                "-L",
+                "/usr/lib/x86_64-linux-gnu/",
+                "-l",
+                "mariadb",
+                "-l",
+                "ncurses"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "detail": "compiler: /usr/bin/gcc"
+        },
+        {
+            "type": "cppbuild",
+            "label": "Compiler les tests",
+            "command": "/usr/bin/gcc",
+            "args": [
+                "-g",
+                "${workspaceFolder}/Sources/clavier.c",
+                "${workspaceFolder}/Sources/ecran.c",
+                "${workspaceFolder}/Sources/mots.c",
+                "${workspaceFolder}/Sources/partie.c",
+                "${workspaceFolder}/Sources/score.c",
+                "${workspaceFolder}/Unity/unity.c",
+                "${workspaceFolder}/Tests/testscomparermots.c",
+                "${workspaceFolder}/Tests/testsdictionnaire.c",
+                "${workspaceFolder}/Tests/testsscores.c",
+                "${workspaceFolder}/Tests/testsverifiermot.c",
+                "${workspaceFolder}/Tests/tests.c",
+                "-I",
+                "/usr/include/mariadb",
+                "-I",
+                "/usr/include/mariadb/mysql",
+                "-o",
+                "${workspaceFolder}/Tests/tests",
+                "-L",
+                "/usr/lib/x86_64-linux-gnu/",
+                "-l",
+                "mariadb",
+                "-l",
+                "ncurses"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            }
+        }
+    ]
+}
