@@ -8,8 +8,11 @@ Le projet consiste à développer, tester et présenter le jeu "Word Mastermind"
 
 ## Collaborateurs
 
-- Professeur Moins (email_professeur_moins@votreuniversite.edu)
-- Professeur Alary (email_professeur_alary@votreuniversite.edu)
+- Philippe Alary
+- Abdelmajid Kaouass
+- Olivier Legrand
+- Guy Moins
+- Jean-Marc Steux
 
 ## Structure du Projet
 
