@@ -36,6 +36,7 @@
 *.x86_64
 *.hex
 mastermind
+Tests/tests
 
 # Debug files
 *.dSYM/

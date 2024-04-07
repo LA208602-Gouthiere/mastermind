@@ -2,16 +2,16 @@
 #define _DICO_CONST
 // Structure pour stocker le dictionnaire des mots
 // Elle contient un tableau dynamique de mots et le compteur du nombre de mots
-struct Dictionnaire
-{
-    // A COMPLETER (Cf. LPP2 structures)
+struct Dictionnaire {
+    char ** listeMots;
+    int nbMots;
 };
 
 // Structure pour le résultat d'un ligne contenant le nombre de lettres bien
 // placées et le nombre de lettre mal placées
-struct ResultatLigne
-{
-    // A COMPLETER (Cf. LPP2 structures)
+struct ResultatLigne {
+    int nbLettreBienPlacees;
+    int nbLettreMalPlacees;
 };
 #endif
 
