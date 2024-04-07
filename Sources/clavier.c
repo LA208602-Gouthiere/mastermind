@@ -27,5 +27,5 @@ char * LireTexte()
 /// @param pointeur Pointeur à vérfier
 void checkAllocation(void * pointeur){
    if (!pointeur)
-      AfficherErreurEtTerminer("Erreur d'allocation mémoire", -1);
+      AfficherErreurEtTerminer("Erreur d'allocation mémoire", 0);
 }
