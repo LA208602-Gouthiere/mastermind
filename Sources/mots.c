@@ -102,10 +102,39 @@ void EffacerDictionnaire(struct Dictionnaire * dictionnaire){
 /// @param resultat adresse d'une structure à garnir avec le résultat
 /// @return false si comparaison impossible sinon true
 bool ComparerMots(char *solution, char *motPlace, struct ResultatLigne *resultat){
-    // Conseil: commencer par décrire l'algorithme en détail, p.ex. en pseudo langage
 
-    // FONCTIONS UTILISEES:
-    // cf. cours LPP2 et LPP1 (chaînes de caractères)
-    
-    return false; // A adapter
+    if (!VerifierMot(motPlace))
+        return false;
+
+    int occurencesSolution[26] = {0};
+    int occurencesMotPlace[26] = {0};
+
+    resultat->nbLettreBienPlacees = 0;
+    resultat->nbLettreMalPlacees = 0;
+
+    // Compte les occurrences de chaque lettre dans solution et motPlace
+    for (int carPos = 0; carPos < 4; carPos++){
+
+        // Si même lettre
+        if(motPlace[carPos] == solution[carPos]) {
+            resultat->nbLettreBienPlacees++;
+        } else {
+            // Incrémente le compteur de la lettre dans les tableaux d'occurences
+            occurencesSolution[solution[carPos] - 'a']++;
+            occurencesMotPlace[motPlace[carPos] - 'a']++;
+        }
+    }
+
+    // Compte les lettres mal placées
+    for (int carPos = 0; carPos < 26; carPos++){
+
+        // Ex: abri et dada, 1 fois a et 2 fois a, on incrémente de 2
+        //     car il y a 2 lettres présentes mais mal placées
+        // Ex: dada et abri, 2 fois a et 1 fois a, on incrémente de 1
+        //     car il y a 1 lettre présente mais mal placée
+        if(occurencesMotPlace[carPos] != 0 && occurencesSolution[carPos] != 0)
+            resultat->nbLettreMalPlacees+=occurencesMotPlace[carPos];
+
+    }
+    return true;
 }
