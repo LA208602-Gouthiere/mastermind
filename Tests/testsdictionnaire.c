@@ -61,7 +61,15 @@ void TestDictionnaire_chiffres(){
 void TestDictionnaire_mauvaisFichier(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
     struct Dictionnaire * dictionnaire;
-    dictionnaire = LireDictionnaire("fichierInexistant.txt", messageDeRetour);
+    dictionnaire = LireDictionnaire("FichiersMots/fichierInexistant.txt", messageDeRetour);
+    TEST_ASSERT_NULL(dictionnaire);
+    free(messageDeRetour);
+}
+
+void TestDictionnaire_fichierVide(){
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    struct Dictionnaire * dictionnaire;
+    dictionnaire = LireDictionnaire("FichiersMots/liste_vide.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
     free(messageDeRetour);
 }
@@ -73,4 +81,5 @@ void TestsDictionnaire(){
     RUN_TEST(TestDictionnaire_majuscules);
     RUN_TEST(TestDictionnaire_chiffres);
     RUN_TEST(TestDictionnaire_mauvaisFichier);
+    RUN_TEST(TestDictionnaire_fichierVide);
 }

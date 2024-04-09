@@ -21,7 +21,6 @@ bool VerifierMot(char *motAVerifier){
     return true;
 }
 
-
 /// @brief Initialise la structure avec le dictionnaire
 ///        en l'allouant en memoire et en lisant le dictionnaire à partir d'un fichier.
 ///        En cas d'erreur garnit la structure Dico_Message avec l'explication de l'erreur puis renvoie NULL.
@@ -32,48 +31,71 @@ bool VerifierMot(char *motAVerifier){
 struct Dictionnaire * LireDictionnaire(char *nomDeFichier, struct Dico_Message * messageDeRetour) {
 
     struct Dictionnaire * dictionnaire;
-    char * bufferMot;
-    int nbMots = 0;
-    FILE * fichier = fopen(nomDeFichier, "r");
+    FILE * fichier;
+    char bufferMot[100];
+    
+    // Vérifie allocation
+    dictionnaire = (struct Dictionnaire *)malloc(sizeof(struct Dictionnaire));
+    if (!dictionnaire) {
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour le dictionnaire");
+        messageDeRetour->codeErreur = 0;
+        return NULL;
+    }
 
-    if (!fichier){ // Vérifie ouverture du fichier
+    // Vérifie ouverture du fichier
+    fichier = fopen(nomDeFichier, "r");
+    if (!fichier){ 
         sprintf(messageDeRetour->messageErreur, "Erreur lors de l'ouverture du fichier %s", nomDeFichier);
         messageDeRetour->codeErreur = errno;
         return NULL;
     }
 
-    dictionnaire = (struct Dictionnaire *)malloc(sizeof(struct Dictionnaire));
+    // Lecture du fichier
     dictionnaire->listeMots = NULL;
-    bufferMot = (char *) malloc(1000);
-    while (fscanf(fichier, "%s", bufferMot) == 1) {
+    dictionnaire->nbMots = 0;
+    while (fscanf(fichier, "%99s", bufferMot) == 1) { // %99s permet d'éviter un débordement de tampon
 
         if (VerifierMot(bufferMot)){
 
             // Rajoute une zone mémoire pour stocker un pointeur vers un mot de plus
-            dictionnaire->listeMots = (char **)realloc(dictionnaire->listeMots, (nbMots+1) * sizeof(char *));
+            dictionnaire->listeMots = (char **)realloc(dictionnaire->listeMots, (dictionnaire->nbMots+1) * sizeof(char *));
 
-            // Rajoute une zone mémoire pour stocker le mot
-            dictionnaire->listeMots[nbMots] = (char *)malloc(strlen(bufferMot) + 1);
+            // Vérifie allocation
+            if (!dictionnaire->listeMots) {
+                sprintf(messageDeRetour->messageErreur, "Erreur de réallocation mémoire pour la liste de mots");
+                messageDeRetour->codeErreur = 0;
+                EffacerDictionnaire(dictionnaire);
+                fclose(fichier);
+                return NULL;
+            }
 
-            // Copie le mot dans la zone
-            strcpy(dictionnaire->listeMots[nbMots], bufferMot);
-            nbMots++;
+            // Rajoute une zone mémoire pour stocker le mot et le copie
+            dictionnaire->listeMots[dictionnaire->nbMots] = (char *)malloc(strlen(bufferMot) + 1);
+            strcpy(dictionnaire->listeMots[dictionnaire->nbMots], bufferMot);
+
+            dictionnaire->nbMots++;
 
         } else {
-
             // Vide le dictionnaire, remplit le message d'erreur et quitte la boucle
-            free(bufferMot);
             EffacerDictionnaire(dictionnaire);
-            sprintf(messageDeRetour->messageErreur, "Le mot à la ligne %d du fichier %s est invalide", nbMots+1, nomDeFichier);
+            sprintf(messageDeRetour->messageErreur, "Le mot à la ligne %d du fichier %s est invalide", dictionnaire->nbMots+1, nomDeFichier);
             messageDeRetour->codeErreur = 0;
+            fclose(fichier);
             return NULL;
         }
     }
-    dictionnaire->nbMots = nbMots;
-    free(bufferMot);
-
-    if (fclose(fichier)){ // Fermeture du fichier
+    
+    // Vérifie que le nombre de mots scannés n'est pas nul
+    if (dictionnaire->nbMots == 0){
+        sprintf(messageDeRetour->messageErreur, "Erreur, le fichier %s est vide", nomDeFichier);
+        messageDeRetour->codeErreur = 0;
         EffacerDictionnaire(dictionnaire);
+        fclose(fichier);
+        return NULL;
+    }  
+
+    // Fermeture du fichier
+    if (fclose(fichier)){
         sprintf(messageDeRetour->messageErreur, "Erreur lors de la fermeture du fichier %s", nomDeFichier);
         messageDeRetour->codeErreur = errno;
         return NULL;
