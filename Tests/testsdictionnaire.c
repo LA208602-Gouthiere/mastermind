@@ -58,10 +58,19 @@ void TestDictionnaire_chiffres(){
     free(messageDeRetour);
 }
 
+void TestDictionnaire_mauvaisFichier(){
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    struct Dictionnaire * dictionnaire;
+    dictionnaire = LireDictionnaire("fichierInexistant.txt", messageDeRetour);
+    TEST_ASSERT_NULL(dictionnaire);
+    free(messageDeRetour);
+}
+
 void TestsDictionnaire(){
     RUN_TEST(TestDictionnaire_OK);
     RUN_TEST(TestDictionnaire_accents);
     RUN_TEST(TestDictionnaire_longueurs);
     RUN_TEST(TestDictionnaire_majuscules);
     RUN_TEST(TestDictionnaire_chiffres);
+    RUN_TEST(TestDictionnaire_mauvaisFichier);
 }
