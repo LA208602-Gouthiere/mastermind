@@ -71,6 +71,12 @@ struct Dictionnaire * LireDictionnaire(char *nomDeFichier, struct Dico_Message *
 
             // Rajoute une zone mémoire pour stocker le mot et le copie
             dictionnaire->listeMots[dictionnaire->nbMots] = (char *)malloc(strlen(bufferMot) + 1);
+            // Vérifie allocation
+            if (!dictionnaire->listeMots[dictionnaire->nbMots]) {
+                sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour les mots du dictionnaire");
+                messageDeRetour->codeErreur = 0;
+                return NULL;
+            }
             strcpy(dictionnaire->listeMots[dictionnaire->nbMots], bufferMot);
 
             dictionnaire->nbMots++;
@@ -149,13 +155,14 @@ bool ComparerMots(char *solution, char *motPlace, struct ResultatLigne *resultat
 
     // Compte les lettres mal placées
     for (int carPos = 0; carPos < 26; carPos++){
-
-        // Ex: abri et dada, 1 fois a et 2 fois a, on incrémente de 2
-        //     car il y a 2 lettres présentes mais mal placées
-        // Ex: dada et abri, 2 fois a et 1 fois a, on incrémente de 1
-        //     car il y a 1 lettre présente mais mal placée
         if(occurencesMotPlace[carPos] != 0 && occurencesSolution[carPos] != 0)
-            resultat->nbLettreMalPlacees+=occurencesMotPlace[carPos];
+            // Prend la plus petite valeur
+            // Ex: abri et dada, 1 fois a et 2 fois a, on incrémente de 1
+            //     car il y a 1 lettres en commun mais mal placées
+            if (occurencesMotPlace[carPos] < occurencesSolution[carPos])
+                resultat->nbLettreMalPlacees+=occurencesMotPlace[carPos];
+            else
+                resultat->nbLettreMalPlacees+=occurencesSolution[carPos];
 
     }
     return true;

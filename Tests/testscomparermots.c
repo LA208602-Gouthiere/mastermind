@@ -38,7 +38,7 @@ void TestComparerMots_Differents2() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     TEST_ASSERT_TRUE(ComparerMots("abri", "dada", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
-    TEST_ASSERT_EQUAL_INT(2, resultat->nbLettreMalPlacees);
+    TEST_ASSERT_EQUAL_INT(1, resultat->nbLettreMalPlacees);
     free(resultat);
 }
 
