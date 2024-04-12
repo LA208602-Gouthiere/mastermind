@@ -20,8 +20,8 @@ char * LireTexte(){
    carPos = 0;
    while ((caractere = getch()) != '\n') {
 
-      // Limite aux caractères affichables
-      if(caractere >= 32 && caractere <= 126){
+      // Limite aux caractères affichables et à 10 caractères
+      if(caractere >= 32 && caractere <= 126 && carPos < 10){
          texte[carPos] = caractere;
          carPos++;
          
