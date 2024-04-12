@@ -28,13 +28,21 @@ void TestComparerMots_Identiques3() {
 
 void TestComparerMots_Differents1() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_TRUE(ComparerMots("abri", "coup", resultat));
+    TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
+    TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreMalPlacees);
+    free(resultat);
+}
+
+void TestComparerMots_Differents2() {
+    struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     TEST_ASSERT_TRUE(ComparerMots("papa", "apap", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(4, resultat->nbLettreMalPlacees);
     free(resultat);
 }
 
-void TestComparerMots_Differents2() {
+void TestComparerMots_Differents3() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     TEST_ASSERT_TRUE(ComparerMots("abri", "dada", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
@@ -42,7 +50,7 @@ void TestComparerMots_Differents2() {
     free(resultat);
 }
 
-void TestComparerMots_Differents3() {
+void TestComparerMots_Differents4() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     TEST_ASSERT_TRUE(ComparerMots("dada", "abri", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
@@ -50,7 +58,7 @@ void TestComparerMots_Differents3() {
     free(resultat);
 }
 
-void TestComparerMots_Differents4() {
+void TestComparerMots_Differents5() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     TEST_ASSERT_TRUE(ComparerMots("aaaz", "zaaa", resultat));
     TEST_ASSERT_EQUAL_INT(2, resultat->nbLettreBienPlacees);
@@ -79,6 +87,7 @@ void TestsComparaisonDeMots(){
     RUN_TEST(TestComparerMots_Differents2);
     RUN_TEST(TestComparerMots_Differents3);
     RUN_TEST(TestComparerMots_Differents4);
+    RUN_TEST(TestComparerMots_Differents5);
     RUN_TEST(TestComparerMots_Impossible1);
     RUN_TEST(TestComparerMots_Impossible2);
 }
