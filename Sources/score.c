@@ -1,37 +1,75 @@
 #include "../Includes/common.h"
 #include "../Includes/score.h"
 
-// Fonction pour executer une instruction SQL
-// En cas d'erreur, affiche la cause a la console, mais continue toujours
-//
-// Paramètres:
-// - Pointeur vers la structure de connexion MYSQL
-// - Chaine de caracteres avec l'instruction a executer
-// - Structure pour ecrire un message et un code en cas d'erreur
-// Renvoie:
-// - booleen qui indique le resultat
-bool ExecuterInstructionSQL(MYSQL *sqlConnection, char *instructionSQL, struct Dico_Message *messageDeRetour)
-{
-    // A coder - cf cours FBD2
-    return false; // A adapter
+
+/// @brief Fonction pour exécuter une instruction SQL
+///        En cas d'erreur, affiche la cause à la console, mais continue toujours
+/// @param sqlConnection Pointeur vers la structure de connexion MYSQL
+/// @param instructionSQL Chaine de caractères avec l'instruction à exécuter
+/// @param messageDeRetour Structure pour écrire un message et un code en cas d'erreur
+/// @return booléen qui indique le résultat : false en cas de succès, true en cas d'erreur
+bool ExecuterInstructionSQL(MYSQL *sqlConnection, char *instructionSQL, struct Dico_Message *messageDeRetour){
+    if (mysql_query(sqlConnection, instructionSQL)){
+        strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
+        messageDeRetour->codeErreur = mysql_errno(sqlConnection);
+        fprintf(stderr, "%s\n", messageDeRetour->messageErreur);
+        return true;
+    }
+    return false;
 }
 
+/// @brief Fonction pour se connecter à la base de données en la créant si elle n'existe pas
+/// @param baseDeTest Booléen qui indique si c'est la base de donnees pour les tests unitaires ou pas (et donc: de production)
+/// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
+/// @return Pointeur vers la structure MYSQL de la connexion
+MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRetour){
+    
+    MYSQL * sqlConnection;
+    char * db;
+    char * requete;
 
-// Fonction pour se connecter a la base de donnees en la creant si elle n'existe pas
-// Paramètres:
-// - Booleen qui indique si c'est la base de donnees pour les tests unitaires ou pas (et donc: de production)
-// - Pointeur vers la structure pour remplir un message d'erreur et un eventuel code d'erreur
-// Renvoie:
-// - Pointeur vers la structure MYSQL de la connexion
-MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRetour)
-{
-    MYSQL *sqlConnection;
+    // Initialisation de la structure
+    if(!(sqlConnection = mysql_init(NULL))){
+        // Si erreur lors de l'initialisation
+        strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
+        messageDeRetour->codeErreur = mysql_errno(sqlConnection);
+        return NULL;
+    }
 
-    // FONCTIONS APPELLEES: voir le cours FBD2
-    // Le nom de la DB contient le numéro d'étudiant
+    // Connexion à MySQL
+    if (!mysql_real_connect(sqlConnection, "127.0.0.1", "root", NULL, NULL, 3306, NULL, 0)){
+        // Si erreur lors de la connexion
+        strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
+        messageDeRetour->codeErreur = mysql_errno(sqlConnection);
+        return NULL;
+    }
 
+    // Sélection de la base de données
+    if(baseDeTest)
+        db = "la208602_test";
+    else
+        db = "la208602";
+
+    // Crée la base de données si elle n'existe pas
+    requete = (char *)malloc(strlen("CREATE DATABASE IF NOT EXISTS %s") + strlen(db) +1);
+    sprintf(requete, "CREATE DATABASE IF NOT EXISTS %s", db);
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour))
+        return NULL;
+
+    // Définit la DB à utiliser
+    requete = (char *)malloc(strlen("USE %s") + strlen(db) +1);
+    sprintf(requete, "USE %s", db);
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour))
+        return NULL;
+
+    // Crée la table joueurs si elle n'existe pas
+    if (ExecuterInstructionSQL(sqlConnection, "CREATE TABLE IF NOT EXISTS joueurs(id_joueur INT AUTO_INCREMENT, nom_joueur VARCHAR(10), score_joueur INT, PRIMARY KEY(id_joueur))", messageDeRetour))
+        return NULL;
+
+    free(requete);
     return sqlConnection;
 }
+
 
 // Fonction lire l'identifiant unique du joueur dans la base de donnees
 // Si le joueur n'est pas déjà present, il est ajoute puis la fonction
