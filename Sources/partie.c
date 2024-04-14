@@ -5,88 +5,149 @@
 #include "../Includes/partie.h"
 #include "../Includes/score.h"
 
-// Fonction pour créer une partie
-// Paramètre:
-// - Le dictionnaire contenant tous les mots
-// Renvoie
-// - Une structure Partie allouée en memoire, avec un mot choisi au hasard
-//   et toute l'information mise à zero pour commencer la partie
-struct Partie *CreerPartie(struct Dictionnaire *dictionnaire)
-{
-    struct Partie *partieEnCours;
+/// @brief Fonction pour créer une partie
+/// @param dictionnaire Le dictionnaire contenant tous les mots
+/// @return Une structure Partie allouée en memoire, avec un mot choisi au hasard
+///         et toute l'information mise à zero pour commencer la partie
+struct Partie * CreerPartie(struct Dictionnaire * dictionnaire){
+    
+    struct Partie * partieEnCours = (struct Partie *)malloc(sizeof(struct Partie));
 
-    // FONCTIONS UTILISEES
-    // malloc()
+    // Choisit un mot au hasard
+    srand(time(NULL));
+    // partieEnCours->solution = (char *)malloc(5);
+    partieEnCours->solution = dictionnaire->listeMots[rand()%(dictionnaire->nbMots - 1)];
+
+    partieEnCours->motsEssayes = NULL;
+    partieEnCours->resultatsEssais = (struct ResultatLigne **)malloc(sizeof(struct ResultatLigne *));
+    partieEnCours->nomJoueur[0] = '\0';
+    partieEnCours->numEssaiCourant = 0;
+    partieEnCours->resultat = false;
+    
     // AfficherErreurEtTerminer()
-    // srand()
-
     return partieEnCours;
 }
 
-// Fonction pour libérer la memoire liee a une partie
-// Paramètre:
-// - Pointeur vers la strcuture Partie a libérer de la memoire
-void EffacerPartie(struct Partie *partieEnCours)
-{
-    // FONCTIONS UTILISEES
-    // free()
+/// @brief Fonction pour libérer la memoire liée à une partie
+/// @param partieEnCours Pointeur vers la strcuture Partie à libérer de la memoire
+void EffacerPartie(struct Partie * partieEnCours){
+    free(partieEnCours->motsEssayes);
+    free(partieEnCours->resultatsEssais);
+    free(partieEnCours);
 }
 
-// Fonction pour afficher une partie en cours
-// Pour chaque mot déjà essayé, on affiche
-// - Le mot
-// - Le resultat: un + par lettre bien placée et un - par lettre mal placée
-// Paramètre:
-// - Pointeur vers la structure Partie
-// - Booleen qui indique si on est en mode debug (qui affiche la solution)
-void AfficherPartie(struct Partie *partieEnCours, bool modeDebug)
-{
+/// @brief Fonction pour afficher une partie en cours
+///        Pour chaque mot déjà essayé, on affiche :
+///        - Le mot
+///        - Le resultat: un + par lettre bien placée et un - par lettre mal placée
+/// @param partieEnCours Pointeur vers la structure Partie
+/// @param modeDebug Booleen qui indique si on est en mode debug (qui affiche la solution)
+void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
+
     // On efface tout et on affiche le jeu dans son état actuel
+    EffacerEcran();
+    
+    // Affiche les mots essayés
+    AfficherHautDeJeu(modeDebug ? partieEnCours->solution : NULL);
+    for (int noMot = 0; noMot < partieEnCours->numEssaiCourant; noMot++){
+        
+        AfficherMotDeJeu(partieEnCours->motsEssayes[noMot], partieEnCours->resultatsEssais[noMot]->nbLettreBienPlacees, partieEnCours->resultatsEssais[noMot]->nbLettreMalPlacees);
+        if (noMot != 9)
+            AfficherSeparateurDeJeu();
+    }
 
-    // FONCTIONS UTILISEES
-    // EffacerEcran();
-    // AfficherHautDeJeu();
-    // AfficherMotDeJeu();
-    // AfficherSeparateurDeJeu();
-    // AfficherBasDeJeu();
+    // Affiche les cases restantes
+    for (int noCase = partieEnCours->numEssaiCourant; noCase < 10; noCase++){
+        
+        AfficherMotDeJeu("    ", 0, 0);
+        if (noCase != 9)
+            AfficherSeparateurDeJeu();
+    }
+    AfficherBasDeJeu();
+    refresh();
 }
 
-// Fonction pour jouer une partie
-// Paramètre:
-// - Pointeur vers la structure Partie préablement initialisée avec une nouvelle partie
-// Renvoie:
-// - false si abandon, true si fin de partie (gagnée ou perdue)
-// Fonctionnement:
-// - Affiche la partie (mots déjà joués)
-// - Demande un nouveau mot de 4 lettres ou ENTER pour abandonner le jeu
-// - Verifier le mot et s'il est correct, calculer le resultat
-//   (10 si trouve en 1 coup, 9 en 2 coups... 1 en 10 cours)
-// - Si le mot n'est pas correct, le resultat est 0.
-// A la fin de la partie:
-// - Si gagne ou perdu: on demande le nom du jour et on sauve le résultat
-// - Si abandon: fin de partie, on affiche la solution
-bool JouerPartie(struct Partie *partieEnCours)
-{
-    // Conseil: commencer par décrire l'algorithme en détail, p.ex. en pseudo langage
 
-    // FONCTIONS UTILISEES:
-    // AfficherPartie()
-    // AfficherTexteIndenteSansRetour()
-    // LireTexte()
-    // VerifierMot()
-    // ComparerMots()
-    // SauverScore()
-    // free()
+/// @brief Jouer une partie
+///        Fonctionnement:
+///        - Affiche la partie (mots déjà joués)
+///        - Demande un nouveau mot de 4 lettres ou ENTER pour abandonner le jeu
+///        - Verifier le mot et s'il est correct, calculer le resultat
+///          (10 si trouve en 1 coup, 9 en 2 coups... 1 en 10 cours)
+///        - Si le mot n'est pas correct, le resultat est 0.
+///        A la fin de la partie:
+///        - Si gagne ou perdu: on demande le nom du jour et on sauve le résultat
+///        - Si abandon: fin de partie, on affiche la solution
+/// @param partieEnCours Pointeur vers la structure Partie préablement initialisée avec une nouvelle partie
+/// @return false si abandon, true si fin de partie (gagnée ou perdue)
+bool JouerPartie(struct Partie *partieEnCours){
 
-    return false; // A adapter
+    char * motLu;
+    struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+
+    partieEnCours->numEssaiCourant = 0;
+    do{
+
+        // Saisie
+        do{
+            AfficherPartie(partieEnCours, true);
+            AfficherTexteIndenteSansRetour("Entrez un mot de 4 lettres (ENTER pour abandonner) : ");
+            
+            motLu = LireTexte();
+            // Abandon si ENTER pressé (mot vide)
+            if (strcmp(motLu, "") == 0){
+                free(motLu);
+                return false;
+            }
+
+        } while (!VerifierMot(motLu));
+
+        if (ComparerMots(partieEnCours->solution, motLu, resultat)){
+            
+            // Rajoute une zone mémoire pour stocker le mot et le copie
+            partieEnCours->motsEssayes = (char **)realloc(partieEnCours->motsEssayes, (partieEnCours->numEssaiCourant+1) * sizeof(char *));
+            partieEnCours->motsEssayes[partieEnCours->numEssaiCourant] = (char *)malloc(strlen(motLu) + 1);
+            strcpy(partieEnCours->motsEssayes[partieEnCours->numEssaiCourant], motLu);
+
+            // Rajoute une zone mémoire pour stocker le resultat
+            partieEnCours->resultatsEssais = (struct ResultatLigne **)realloc(partieEnCours->resultatsEssais, (partieEnCours->numEssaiCourant + 1) * sizeof(struct ResultatLigne *));
+            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant] = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreBienPlacees = resultat->nbLettreBienPlacees;
+            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreMalPlacees = resultat->nbLettreMalPlacees;
+
+            partieEnCours->numEssaiCourant++;
+            // Lors d'une victoire
+            if (resultat->nbLettreBienPlacees == 4){
+                
+                do {
+                    AfficherPartie(partieEnCours, false);
+                    AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
+                    motLu = LireTexte();
+                } while (strlen(motLu) > 10 || strlen(motLu) <= 0);
+                strcpy(partieEnCours->nomJoueur, LireTexte());
+                
+                if (!SauverScore(false, motLu, partieEnCours->numEssaiCourant, messageDeRetour)){
+                    AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
+                }
+
+                free(motLu);
+                free(messageDeRetour);
+                return true;
+            }
+        }
+
+    } while (partieEnCours->numEssaiCourant <= 10);
+
+    free(motLu);
+    return true;
 }
 
-// Fonction pour afficher les meilleurs scores
-// Le nombre de scores est une constante du code, on peut la modifier et recompiler
-// La fonction LireMeilleursScores() est appellée pour obtenir les meilleurs scores
-// Son résultat est un tableau alloué en mémoire, qu'il faut libérer a la fin
-void AfficherMeilleursScores()
-{
+/// @brief Fonction pour afficher les meilleurs scores
+///        Le nombre de scores est une constante du code, on peut la modifier et recompiler
+///        La fonction @c LireMeilleursScores() est appellée pour obtenir les meilleurs scores
+///        Son résultat est un tableau alloué en mémoire, qu'il faut libérer a la fin
+void AfficherMeilleursScores(){
     // FONCTIONS UTILISEES:
     // LireMeilleursScores()
     // AfficherErreurEtTerminer()
