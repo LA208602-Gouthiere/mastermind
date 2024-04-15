@@ -71,59 +71,97 @@ MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRet
 }
 
 
-// Fonction lire l'identifiant unique du joueur dans la base de donnees
-// Si le joueur n'est pas déjà present, il est ajoute puis la fonction
-// se rapelle en recursif pour obtenir l'identifiant autoincremente dans la base de donnees
-// Paramètres:
-// - Pointeur vers la structure de connexion MYSQL
-// - Le nom du joueur
-// - Pointeur vers la structure pour remplir un message d'erreur et un eventuel code d'erreur
-// Renvoie
-// - L'identifiant unique du joueur dans la base de donnees
-int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *messageDeRetour)
-{
+/// @brief Fonction pour lire l'identifiant unique du joueur dans la base de données. 
+///        Si le joueur n'est pas déjà présent, il est ajouté puis la fonction
+///        se rappelle en récursif pour obtenir l'identifiant autoincrementé dans la base de données
+/// @param sqlConnection Pointeur vers la structure de connexion MYSQL
+/// @param nomJoueur Le nom du joueur
+/// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
+/// @return L'identifiant unique du joueur dans la base de données, retourne -1 en cas d'erreur
+int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *messageDeRetour){
+    
     MYSQL_RES *sqlResult;
     MYSQL_ROW sqlRow;
+    char * requete;
+    int id_joueur;
 
-    // FONCTIONS APPELLEES:
-    // ExecuterInstructionSQL();
-    // Autres fonctions: voir le cours FBD2
+    // Verification du nom du joueur
+    if(strlen(nomJoueur) > 10 || strlen(nomJoueur) <= 0 ){
+        return -1;
+    }
 
-    // Verification du nom du joueur: pas NULL et max 50 caracteres
+    // Génère la requête
+    char * selectJoueur = "SELECT id_joueur FROM joueurs WHERE nom_joueur='%s'";
+    requete = (char *)malloc(strlen(selectJoueur) + strlen(nomJoueur) +1);
+    sprintf(requete, selectJoueur, nomJoueur);
 
-    return 0; // A Adapter
+    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+
+    // Stocke le résultat
+    if(!(sqlResult = mysql_store_result(sqlConnection))){
+        strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
+        messageDeRetour->codeErreur = mysql_errno(sqlConnection);
+        return -1;
+    }
+    
+    if (sqlRow = mysql_fetch_row(sqlResult)) {// Si le joueur existe déjà, récupérer l'ID
+        id_joueur = atoi(sqlRow[0]);
+        mysql_free_result(sqlResult);
+        return id_joueur;
+    }
+
+    // Si le joueur n'existe pas, l'ajouter et récupérer l'ID auto-incrémenté
+    sprintf(requete, "INSERT INTO joueurs (nom_joueur, score_joueur) VALUES ('%s', 0)", nomJoueur);
+    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+
+    free(requete);
+    // Rappel récursif pour obtenir l'ID du nouveau joueur
+    return LireIDJoueur(sqlConnection, nomJoueur, messageDeRetour);
 }
 
-// Fonction pour sauver un score dans la base de donnees
-// Le score se calcule comme etant (nombre maximum d'essais + 1 - nombre d'essais)
-// Paramètres:
-// - Booleen qui indique si c'est la base de donnees pour les tests unitaires ou pas (et donc: de production)
-// - Le nom du joueur
-// - Le nombre d'essai.
-// - Pointeur vers la structure pour remplir un message d'erreur et un eventuel code d'erreur
-// Renvoie
-// - Un booleen qui indique si le sauvetage s'est fait ou pas
-bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dico_Message *messageDeRetour)
-{
-    // FONCTIONS APPELLEES:
-    // ConnecterBaseDeDonnees();
-    // LireIDJoueur();
-    // ExecuterInstructionSQL();
-    // Autres fonctions: voir le cours FBD2
 
-    return false; // A adapter
+/// @brief Fonction pour sauver un score dans la base de données
+///        Le score se calcule comme étant (nombre maximum d'essais + 1 - nombre d'essais)
+/// @param baseDeTest Booleen qui indique si c'est la base de données pour les tests unitaires ou pas (et donc: de production)
+/// @param nomJoueur Le nom du joueur
+/// @param nombreDEssais Le nombre d'essais.
+/// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
+/// @return Un booléen qui indique si la sauvegarde s'est faite ou pas
+bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dico_Message * messageDeRetour){
+    
+    MYSQL * sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour);
+    int id_joueur;
+    int score;
+    
+    if(!sqlConnection){
+        return false;
+    }
+    
+    if((id_joueur = LireIDJoueur(sqlConnection, nomJoueur, messageDeRetour)) == -1){
+        return false;
+    }
+
+    // Génère la requête
+    score = 11 - nombreDEssais;
+    char * selectJoueur = "UPDATE joueurs SET score_joueur=%d WHERE id_joueur=%d";
+    char * requete = (char *)malloc(strlen(selectJoueur) + 20); // + 20 pour les valeurs
+    sprintf(requete, selectJoueur, score, id_joueur);
+
+    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+
+    mysql_close(sqlConnection);
+    free(requete);
+    return true;
 }
 
-// Fonction pour les meilleurs scores dans la base de donnees
-// Paramètres:
-// - Booleen qui indique si c'est la base de donnees pour les tests unitaires ou pas (et donc: de production)
-// - Le nombre de scores maximum à lire
-// - Pointeur vers la structure pour remplir un message d'erreur et un eventuel code d'erreur
-// Renvoie
-// - Un pointeur vers le nombre demandé de Points (pointeur vers un tableau)
-//   ou bien NULL en cas d'erreur
-struct Points *LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct Dico_Message *messageDeRetour)
-{
+
+/// @brief Fonction pour lire les meilleurs scores dans la base de données
+/// @param baseDeTest Booleen qui indique si c'est la base de données pour les tests unitaires ou pas (et donc: de production)
+/// @param nombreDeScore Le nombre de scores maximum à lire
+/// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
+/// @return Un pointeur vers le nombre demandé de points (pointeur vers un tableau)
+///         ou bien NULL en cas d'erreur
+struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct Dico_Message *messageDeRetour){
     // FONCTIONS APPELLEES:
     // ConnecterBaseDeDonnees();
     // ExecuterInstructionSQL();
