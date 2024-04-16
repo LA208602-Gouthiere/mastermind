@@ -82,6 +82,7 @@ void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
 /// @return false si abandon, true si fin de partie (gagnée ou perdue)
 bool JouerPartie(struct Partie *partieEnCours){
 
+    bool debug = false;
     char * motLu;
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
@@ -91,10 +92,18 @@ bool JouerPartie(struct Partie *partieEnCours){
 
         // Saisie
         do{
-            AfficherPartie(partieEnCours, true);
+            AfficherPartie(partieEnCours, debug);
             AfficherTexteIndenteSansRetour("Entrez un mot de 4 lettres (ENTER pour abandonner) : ");
             
             motLu = LireTexte();
+            // Mode debug activé quand * est pressé
+            if (strcmp(motLu, "*") == 0){
+                if(debug)
+                    debug = false;
+                else
+                    debug = true;
+            }
+
             // Abandon si ENTER pressé (mot vide)
             if (strcmp(motLu, "") == 0){
                 free(motLu);
@@ -121,16 +130,15 @@ bool JouerPartie(struct Partie *partieEnCours){
             if (resultat->nbLettreBienPlacees == 4){
                 
                 do {
-                    AfficherPartie(partieEnCours, false);
+                    AfficherPartie(partieEnCours, debug);
                     AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     motLu = LireTexte();
                 } while (strlen(motLu) > 10 || strlen(motLu) <= 0);
-                strcpy(partieEnCours->nomJoueur, LireTexte());
+                strcpy(partieEnCours->nomJoueur, motLu);
                 
                 if (!SauverScore(false, motLu, partieEnCours->numEssaiCourant, messageDeRetour)){
                     AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
                 }
-
                 free(motLu);
                 free(messageDeRetour);
                 return true;
@@ -148,15 +156,29 @@ bool JouerPartie(struct Partie *partieEnCours){
 ///        La fonction @c LireMeilleursScores() est appellée pour obtenir les meilleurs scores
 ///        Son résultat est un tableau alloué en mémoire, qu'il faut libérer a la fin
 void AfficherMeilleursScores(){
-    // FONCTIONS UTILISEES:
-    // LireMeilleursScores()
-    // AfficherErreurEtTerminer()
-    // EffacerEcran()
-    // AfficherTexteDansCadre()
-    // AfficherTexteIndenteSansRetour()
-    // AfficherTexteSansRetour()
-    // AfficherNombreSansRetour()
-    // RetourALaLigne()
-    // LireTexte();
-    // free()
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    struct Points * tabScores;
+
+    // Vérifie si le tableau des score est NULL
+    if(!(tabScores = LireMeilleursScores(false, 10, messageDeRetour)))
+        AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
+    
+    EffacerEcran();
+    RetourALaLigne();
+    AfficherTexteDansCadre("Meilleurs Scores");
+    RetourALaLigne();
+    RetourALaLigne();
+
+    // Parcourt le tableau des scores pour les afficher ligne par ligne
+    for (int noJoueur = 0; noJoueur < 5; noJoueur++){
+        AfficherTexteIndenteSansRetour(tabScores[noJoueur].name);
+        AfficherTexteSansRetour(" : ");
+        AfficherNombreSansRetour(tabScores[noJoueur].score);
+        RetourALaLigne();
+    }
+    RetourALaLigne();
+    AfficherTexteIndenteSansRetour("Enfoncez ENTER pour continuer ");
+    LireTexte();
+    free(messageDeRetour);
+    free(tabScores);
 }

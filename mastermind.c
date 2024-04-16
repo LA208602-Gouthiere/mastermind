@@ -21,6 +21,7 @@ int main(){
             partie = CreerPartie(dictionnaire);
             finPartie = JouerPartie(partie);
             EffacerPartie(partie);
+            AfficherMeilleursScores();
 
         } while(finPartie); // Lance une nouvelle partie si la précédente est terminée et qu'elle n'a pas été abandonnée
 
@@ -33,8 +34,5 @@ int main(){
     }
 
     TerminerEcran();
-
-    // AfficherMeilleursScores()
-    
     return EXIT_SUCCESS;
 }
