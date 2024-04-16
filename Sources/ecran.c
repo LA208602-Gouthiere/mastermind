@@ -56,7 +56,7 @@ void AfficherCharSansRetour(unsigned char caractereAAfficher, int repetition){
 /// @brief Affiche un nombre entier à la position courante dans la console ncurses sans retour à la ligne
 /// @param nombreAAfficher le nombre à afficher
 void AfficherNombreSansRetour(int nombreAAfficher){
-    addch(nombreAAfficher + '0');
+    printw("%d", nombreAAfficher);
 }
 
 /// @brief Affiche un caractère spécial à la position courante dans la console ncurses sans retour à la ligne
@@ -76,21 +76,21 @@ void AfficherTexteDansCadre(char * texteAAfficher){
     int lenText = strlen(texteAAfficher);
 
     // Haut du cadre
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_ULCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, lenText);
     AfficherCharSpecialSansRetour(ACS_URCORNER, 1);
 
     // Milieu et texte
     RetourALaLigne();
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
     printw("%s", texteAAfficher);
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
 
     // Bas du cadre
     RetourALaLigne();
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_LLCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, lenText);
     AfficherCharSpecialSansRetour(ACS_LRCORNER, 1);
