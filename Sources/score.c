@@ -37,7 +37,7 @@ MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRet
     }
 
     // Connexion à MySQL
-    if (!mysql_real_connect(sqlConnection, "127.0.0.1", "root", NULL, NULL, 3306, NULL, 0)){
+    if (!mysql_real_connect(sqlConnection, ServerDB, "root", NULL, NULL, 3306, NULL, 0)){
         // Si erreur lors de la connexion
         strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
         messageDeRetour->codeErreur = mysql_errno(sqlConnection);
@@ -104,7 +104,8 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
         return -1;
     }
     
-    if (sqlRow = mysql_fetch_row(sqlResult)) {// Si le joueur existe déjà, récupérer l'ID
+    // Si le joueur existe déjà, récupérer l'ID
+    if (sqlRow = mysql_fetch_row(sqlResult)) {
         id_joueur = atoi(sqlRow[0]);
         mysql_free_result(sqlResult);
         return id_joueur;
@@ -129,11 +130,11 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
 /// @return Un booléen qui indique si la sauvegarde s'est faite ou pas
 bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dico_Message * messageDeRetour){
     
-    MYSQL * sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour);
+    MYSQL * sqlConnection;
     int id_joueur;
     int score;
     
-    if(!sqlConnection){
+    if(!(sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour))){
         return false;
     }
     
@@ -147,7 +148,12 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
     char * requete = (char *)malloc(strlen(selectJoueur) + 20); // + 20 pour les valeurs
     sprintf(requete, selectJoueur, score, id_joueur);
 
-    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+    // Vérifie le résultat de la requête
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
+        mysql_close(sqlConnection);
+        free(requete);
+        return false;
+    }
 
     mysql_close(sqlConnection);
     free(requete);
@@ -162,11 +168,44 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
 /// @return Un pointeur vers le nombre demandé de points (pointeur vers un tableau)
 ///         ou bien NULL en cas d'erreur
 struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct Dico_Message *messageDeRetour){
-    // FONCTIONS APPELLEES:
-    // ConnecterBaseDeDonnees();
-    // ExecuterInstructionSQL();
-    // malloc
-    // Autres fonctions: voir le cours FBD2
+    
+    MYSQL * sqlConnection;
+    MYSQL_RES *sqlResult;
+    MYSQL_ROW sqlRow;
+    struct Points * tabScores;
+    
+    // Vérifie connexion
+    if(!(sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour))){
+        return NULL;
+    }
+    
+    // Récupère les n meilleurs joueurs
+    char * selectJoueurs = "SELECT * FROM joueurs ORDER BY score_joueur DESC LIMIT %d";
+    char * requete = (char *)malloc(strlen(selectJoueurs) + 10);
+    sprintf(requete, selectJoueurs, nombreDeScore);
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
+        mysql_close(sqlConnection);
+        return NULL;
+    }
+    free(requete);
 
-    return NULL; // A adapter
+    // Stocke le résultat
+    if(!(sqlResult = mysql_store_result(sqlConnection))){
+        strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
+        messageDeRetour->codeErreur = mysql_errno(sqlConnection);
+        return NULL;
+    }
+    
+    // Définit une zone mémoire pour le tableau de structures Points
+    tabScores = (struct Points *)malloc(nombreDeScore * sizeof(struct Points));
+    // Remplit le tableau de scores
+    int noJoueur = 0;
+    while (sqlRow = mysql_fetch_row(sqlResult)){
+        tabScores[noJoueur].score = atoi(sqlRow[2]);
+        strcpy(tabScores[noJoueur].name, sqlRow[1]);
+        noJoueur++;
+    }
+    mysql_free_result(sqlResult);
+    mysql_close(sqlConnection);
+    return tabScores;
 }

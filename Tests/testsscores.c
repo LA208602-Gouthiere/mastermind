@@ -83,7 +83,6 @@ void test_sauverScore_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
-    MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
     bool resultat;
     
     resultat = SauverScore(true, "joueur1", 9, messageDeRetour);
@@ -93,8 +92,30 @@ void test_sauverScore_OK(){
     resultat = SauverScore(true, "", 9, messageDeRetour);
     TEST_ASSERT_FALSE(resultat);
 
-    mysql_close(sqlConnection);
     free(messageDeRetour);
+}
+
+// Tests obtention des meilleurs scores
+void test_meilleursScores_OK(){
+    ViderDBDeTest();
+
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    struct Points * tabScores;
+    
+    SauverScore(true, "joueur1", 1, messageDeRetour);
+    SauverScore(true, "joueur2", 2, messageDeRetour);
+    SauverScore(true, "joueur3", 3, messageDeRetour);
+    SauverScore(true, "joueur4", 4, messageDeRetour);
+    SauverScore(true, "joueur5", 5, messageDeRetour);
+
+    tabScores = LireMeilleursScores(true, 10, messageDeRetour);
+    TEST_ASSERT_EQUAL_STRING("joueur1", tabScores[0].name);
+    TEST_ASSERT_EQUAL_INT(10, tabScores[0].score);
+    TEST_ASSERT_EQUAL_STRING("joueur5", tabScores[4].name);
+    TEST_ASSERT_EQUAL_INT(6, tabScores[4].score);
+
+    free(messageDeRetour);
+    free(tabScores);
 }
 
 // Execute tous les tests de scores dans la base de donnees
@@ -104,4 +125,5 @@ void TestsScores()
     RUN_TEST(test_ajoutJoueurs_OK);
     RUN_TEST(test_ajoutJoueurs_longueur);
     RUN_TEST(test_sauverScore_OK);
+    RUN_TEST(test_meilleursScores_OK);
 }

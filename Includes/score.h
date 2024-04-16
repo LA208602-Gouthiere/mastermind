@@ -3,10 +3,11 @@
 
 #ifndef _DICO_SCORE
 #define _DICO_SCORE
-struct Points
-{
-    // A COMPLETER, CF LPP structures
-    // Contient: le nom du joueur et son score
+
+// Structure contenant le nom du joueur et son score
+struct Points {
+    char name[11];
+    int score;
 };
 static const char *ServerDB = "127.0.0.1";
 #endif
