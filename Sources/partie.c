@@ -170,12 +170,16 @@ void AfficherMeilleursScores(){
     RetourALaLigne();
 
     // Parcourt le tableau des scores pour les afficher ligne par ligne
-    for (int noJoueur = 0; noJoueur < 5; noJoueur++){
-        AfficherTexteIndenteSansRetour(tabScores[noJoueur].name);
-        AfficherTexteSansRetour(" : ");
-        AfficherNombreSansRetour(tabScores[noJoueur].score);
-        RetourALaLigne();
+    for (int noJoueur = 0; noJoueur < 10; noJoueur++){
+        // Si le score existe
+        if(tabScores[noJoueur].score != -1){
+            AfficherTexteIndenteSansRetour(tabScores[noJoueur].name);
+            AfficherTexteSansRetour(" : ");
+            AfficherNombreSansRetour(tabScores[noJoueur].score);
+            RetourALaLigne();
+        }
     }
+
     RetourALaLigne();
     AfficherTexteIndenteSansRetour("Enfoncez ENTER pour continuer ");
     LireTexte();
