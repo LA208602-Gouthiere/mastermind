@@ -43,13 +43,18 @@ void EffacerPartie(struct Partie * partieEnCours){
 /// @param partieEnCours Pointeur vers la structure Partie
 /// @param modeDebug Booleen qui indique si on est en mode debug (qui affiche la solution)
 void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
+    
+    // Cas spécial lorsque tous les essais ont été utilisés et qu'on a 11 tentatives
+    int nbCases = partieEnCours->numEssaiCourant;
+    if(nbCases > 10)
+        nbCases--;
 
     // On efface tout et on affiche le jeu dans son état actuel
     EffacerEcran();
     
     // Affiche les mots essayés
     AfficherHautDeJeu(modeDebug ? partieEnCours->solution : NULL);
-    for (int noMot = 0; noMot < partieEnCours->numEssaiCourant; noMot++){
+    for (int noMot = 0; noMot < nbCases; noMot++){
         
         AfficherMotDeJeu(partieEnCours->motsEssayes[noMot], partieEnCours->resultatsEssais[noMot]->nbLettreBienPlacees, partieEnCours->resultatsEssais[noMot]->nbLettreMalPlacees);
         if (noMot != 9)
@@ -57,7 +62,7 @@ void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
     }
 
     // Affiche les cases restantes
-    for (int noCase = partieEnCours->numEssaiCourant; noCase < 10; noCase++){
+    for (int noCase = nbCases; noCase < 10; noCase++){
         
         AfficherMotDeJeu("    ", 0, 0);
         if (noCase != 9)
@@ -136,7 +141,7 @@ bool JouerPartie(struct Partie *partieEnCours){
                     if(resultat->nbLettreBienPlacees == 4){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
-                        partieEnCours->numEssaiCourant++;
+                        // partieEnCours->numEssaiCourant++;
                         AfficherTexteIndenteSansRetour("Dommage... Le mot était \"");
                         AfficherTexteSansRetour(partieEnCours->solution);
                         AfficherTexteSansRetour("\"");
@@ -145,7 +150,7 @@ bool JouerPartie(struct Partie *partieEnCours){
                     }
                     
                     motLu = LireTexte();
-                } while (strlen(motLu) > 10 || strlen(motLu) <= 0);
+                } while (strlen(motLu) > 10 || strlen(motLu) <= 0); // Pseudo doit étre en 1 et 10 caractères
                 strcpy(partieEnCours->nomJoueur, motLu);
                 
                 // Vérifie sauvegarde du score
