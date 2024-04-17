@@ -112,6 +112,7 @@ bool JouerPartie(struct Partie *partieEnCours){
 
         } while (!VerifierMot(motLu));
 
+        // Vérifie mot placé
         if (ComparerMots(partieEnCours->solution, motLu, resultat)){
             
             // Rajoute une zone mémoire pour stocker le mot et le copie
@@ -126,16 +127,28 @@ bool JouerPartie(struct Partie *partieEnCours){
             partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreMalPlacees = resultat->nbLettreMalPlacees;
 
             partieEnCours->numEssaiCourant++;
-            // Lors d'une victoire
-            if (resultat->nbLettreBienPlacees == 4){
+            // Lors d'une victoire ou d'une défaite
+            if (resultat->nbLettreBienPlacees == 4 || partieEnCours->numEssaiCourant == 10){
                 
+                // Saisie du pseudo
                 do {
                     AfficherPartie(partieEnCours, debug);
-                    AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
+                    if(resultat->nbLettreBienPlacees == 4){
+                        AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
+                    } else {
+                        partieEnCours->numEssaiCourant++;
+                        AfficherTexteIndenteSansRetour("Dommage... Le mot était \"");
+                        AfficherTexteSansRetour(partieEnCours->solution);
+                        AfficherTexteSansRetour("\"");
+                        RetourALaLigne();
+                        AfficherTexteIndenteSansRetour("Entrez votre pseudo (max 10 caractères) : ");
+                    }
+                    
                     motLu = LireTexte();
                 } while (strlen(motLu) > 10 || strlen(motLu) <= 0);
                 strcpy(partieEnCours->nomJoueur, motLu);
                 
+                // Vérifie sauvegarde du score
                 if (!SauverScore(false, motLu, partieEnCours->numEssaiCourant, messageDeRetour)){
                     AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
                 }
@@ -145,7 +158,7 @@ bool JouerPartie(struct Partie *partieEnCours){
             }
         }
 
-    } while (partieEnCours->numEssaiCourant <= 10);
+    } while (true);
 
     free(motLu);
     return true;
