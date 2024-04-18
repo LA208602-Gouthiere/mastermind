@@ -141,7 +141,7 @@ bool JouerPartie(struct Partie *partieEnCours){
                     if(resultat->nbLettreBienPlacees == 4){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
-                        // partieEnCours->numEssaiCourant++;
+                        partieEnCours->numEssaiCourant++;
                         AfficherTexteIndenteSansRetour("Dommage... Le mot était \"");
                         AfficherTexteSansRetour(partieEnCours->solution);
                         AfficherTexteSansRetour("\"");
