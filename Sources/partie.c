@@ -13,9 +13,14 @@ struct Partie * CreerPartie(struct Dictionnaire * dictionnaire){
     
     struct Partie * partieEnCours = (struct Partie *)malloc(sizeof(struct Partie));
 
+    // Initialise le srand
+    bool static randInitialise = false;
+    if(!randInitialise){
+        srand(time(NULL));
+        randInitialise = true;
+    }
+    
     // Choisit un mot au hasard
-    srand(time(NULL));
-    // partieEnCours->solution = (char *)malloc(5);
     partieEnCours->solution = dictionnaire->listeMots[rand()%(dictionnaire->nbMots - 1)];
 
     partieEnCours->motsEssayes = NULL;
