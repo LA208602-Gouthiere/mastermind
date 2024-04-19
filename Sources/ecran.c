@@ -8,6 +8,7 @@
 
 /// @brief Initialise la console ncurses
 void InitialiserEcran(){
+    setlocale(LC_ALL, ""); // Initialise la locale pour les caractères accentués
     initscr();
 }
 
@@ -119,7 +120,7 @@ void AfficherErreurEtTerminer(char *texteDErreur, int codeDErreur){
 /// @param motAAfficher Mot à afficher, ou NULL si rien ne doit etre affiché
 void AfficherHautDeJeu(char * motAAfficher){
 
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     AfficherCharSpecialSansRetour(ACS_ULCORNER, 1);
     if (motAAfficher){
 
@@ -145,7 +146,7 @@ void AfficherHautDeJeu(char * motAAfficher){
 /// @param nbreLettresMalplacées Un '-' par lettre mal placée
 void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreLettresMalplacées)
 {
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
 
     // Affiche mot avec espaces
@@ -167,7 +168,7 @@ void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreL
 /// @brief Affiche un separateur entre deux mots du jeu
 void AfficherSeparateurDeJeu(){
 
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     AfficherCharSpecialSansRetour(ACS_LTEE, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 9);
     AfficherCharSpecialSansRetour(ACS_PLUS, 1);
@@ -179,7 +180,7 @@ void AfficherSeparateurDeJeu(){
 // Affiche la bordure inférieure du jeu
 void AfficherBasDeJeu()
 {
-    AfficherCharSansRetour('\t', 3);
+    AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     AfficherCharSpecialSansRetour(ACS_LLCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 9);
     AfficherCharSpecialSansRetour(ACS_BTEE, 1);
