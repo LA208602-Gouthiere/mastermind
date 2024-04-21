@@ -27,6 +27,19 @@ void ViderDBDeTest(){
     free(messageDeRetour);
 }
 
+// Test requête invalide
+void test_requeteInvalide(){
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
+    bool resultat;
+
+    resultat = ExecuterInstructionSQL(sqlConnection, "requête invalide", messageDeRetour);
+    TEST_ASSERT_TRUE(resultat);
+
+    mysql_close(sqlConnection);
+    free(messageDeRetour);
+}
+
 // Test de connexion à la base de données
 void test_connexionDB_OK(){
     ViderDBDeTest();
@@ -71,6 +84,10 @@ void test_ajoutJoueurs_longueur(){
     int id;
     id = LireIDJoueur(sqlConnection, "", messageDeRetour);
     TEST_ASSERT_EQUAL_INT(-1, id);
+    id = LireIDJoueur(sqlConnection, " ", messageDeRetour);
+    TEST_ASSERT_EQUAL_INT(-1, id);
+    id = LireIDJoueur(sqlConnection, "          ", messageDeRetour);
+    TEST_ASSERT_EQUAL_INT(-1, id);
     id = LireIDJoueur(sqlConnection, "0123456789A", messageDeRetour);
     TEST_ASSERT_EQUAL_INT(-1, id);
 
@@ -78,7 +95,7 @@ void test_ajoutJoueurs_longueur(){
     free(messageDeRetour);
 }
 
-// Tests ajout d'un joueur à la base de donnees
+// Tests sauvegarde des scores
 void test_sauverScore_OK(){
     ViderDBDeTest();
 
@@ -89,6 +106,20 @@ void test_sauverScore_OK(){
     TEST_ASSERT_TRUE(resultat);
     resultat = SauverScore(true, "joueur2", 4, messageDeRetour);
     TEST_ASSERT_TRUE(resultat);
+
+    free(messageDeRetour);
+}
+
+void test_sauverScore_longueur(){
+    ViderDBDeTest();
+
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    bool resultat;
+    
+    resultat = SauverScore(true, "   ", 9, messageDeRetour);
+    TEST_ASSERT_FALSE(resultat);
+    resultat = SauverScore(true, "joueur123456789", 4, messageDeRetour);
+    TEST_ASSERT_FALSE(resultat);
     resultat = SauverScore(true, "", 9, messageDeRetour);
     TEST_ASSERT_FALSE(resultat);
 
@@ -107,6 +138,7 @@ void test_meilleursScores_OK(){
     SauverScore(true, "joueur3", 3, messageDeRetour);
     SauverScore(true, "joueur4", 4, messageDeRetour);
     SauverScore(true, "joueur5", 5, messageDeRetour);
+    SauverScore(true, "joueur5", 8, messageDeRetour); // Le score moins bon n'est pas sensé remplacer l'ancien
 
     tabScores = LireMeilleursScores(true, 10, messageDeRetour);
     TEST_ASSERT_EQUAL_STRING("joueur1", tabScores[0].name);
@@ -121,9 +153,11 @@ void test_meilleursScores_OK(){
 // Execute tous les tests de scores dans la base de donnees
 void TestsScores()
 {
+    RUN_TEST(test_requeteInvalide);
     RUN_TEST(test_connexionDB_OK);
     RUN_TEST(test_ajoutJoueurs_OK);
     RUN_TEST(test_ajoutJoueurs_longueur);
     RUN_TEST(test_sauverScore_OK);
+    RUN_TEST(test_sauverScore_longueur);
     RUN_TEST(test_meilleursScores_OK);
 }
