@@ -107,7 +107,7 @@ void AfficherTexteDansCadre(char * texteAAfficher){
     AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
     attron(COLOR_PAIR(COULEURS_MOT));
-    printw("%s", texteAAfficher);
+    AfficherTexteSansRetour(texteAAfficher);
     attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
 
@@ -127,9 +127,9 @@ void AfficherTexteDansCadre(char * texteAAfficher){
 /// @param codeDErreur Le code d'erreur eventuel
 void AfficherErreurEtTerminer(char *texteDErreur, int codeDErreur){
     EffacerEcran();
-    attron(COLOR_PAIR(COULEURS_ERREUR));
     AfficherTexteDansCadre("Erreur");
     RetourALaLigne();
+    attron(COLOR_PAIR(COULEURS_ERREUR));
     AfficherTexteIndenteSansRetour(texteDErreur);
     RetourALaLigne();
     AfficherTexteIndenteSansRetour("Code d'erreur : ");
@@ -163,8 +163,8 @@ void AfficherHautDeJeu(char * motAAfficher){
 /// @param motAAfficher 
 /// @param nbreLettresBienplacées Un '+' par lettre bien placée
 /// @param nbreLettresMalplacées Un '-' par lettre mal placée
-void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreLettresMalplacées)
-{
+void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreLettresMalplacées){
+
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
