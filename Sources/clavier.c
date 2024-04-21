@@ -8,7 +8,7 @@ char * LireTexte(){
 
    int carPos;
    char caractere;
-   char * texte = (char *)malloc(1);
+   char * texte = (char *)malloc(11);
    
    if(!texte)
       AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de la saisie au clavier", 0);
@@ -24,12 +24,6 @@ char * LireTexte(){
       if(caractere >= 32 && caractere <= 126 && carPos < 10){
          texte[carPos] = caractere;
          carPos++;
-         
-         // Rajoute de la mémoire pour 1 caractère supplémentaire
-         texte = (char *)realloc(texte, carPos + 1);
-         if(!texte)
-            AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de la saisie au clavier", 0);
-
          AfficherCharSansRetour(caractere, 1);
       }
 
@@ -43,8 +37,15 @@ char * LireTexte(){
             addch('\b'); // Déplace le curseur à gauche à nouveau
          }
       }
+
+      // Ignore les touches spéciales
+      else if (caractere == '\033') {
+         getch(); getch();
+      }
    }
-   texte[carPos] = '\0'; // Ajout du null byte
+   
+   // Ajout du null byte
+   texte[carPos] = '\0';
    
    return texte;
 }
