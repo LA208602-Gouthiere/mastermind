@@ -12,13 +12,6 @@
 struct Partie * CreerPartie(struct Dictionnaire * dictionnaire){
     
     struct Partie * partieEnCours = (struct Partie *)malloc(sizeof(struct Partie));
-
-    // Initialise le srand
-    bool static randInitialise = false;
-    if(!randInitialise){
-        srand(time(NULL));
-        randInitialise = true;
-    }
     
     // Choisit un mot au hasard
     partieEnCours->solution = dictionnaire->listeMots[rand()%(dictionnaire->nbMots - 1)];
@@ -104,8 +97,8 @@ bool JouerPartie(struct Partie *partieEnCours){
         do{
             AfficherPartie(partieEnCours, debug);
             AfficherTexteIndenteSansRetour("Entrez un mot de 4 lettres (ENTER pour abandonner) : ");
-            
             motLu = LireTexte();
+
             // Mode debug activé quand * est pressé
             if (strcmp(motLu, "*") == 0){
                 if(debug)
@@ -188,7 +181,7 @@ void AfficherMeilleursScores(){
     
     EffacerEcran();
     RetourALaLigne();
-    AfficherTexteDansCadre("Meilleurs Scores");
+    AfficherTexteDansCadre(" Meilleurs Scores ");
     RetourALaLigne();
     RetourALaLigne();
 
