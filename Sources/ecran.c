@@ -8,8 +8,20 @@
 
 /// @brief Initialise la console ncurses
 void InitialiserEcran(){
-    setlocale(LC_ALL, ""); // Initialise la locale pour les caractères accentués
+
+    // Initialise la locale pour les caractères accentués
+    setlocale(LC_ALL, "");
     initscr();
+
+    // Active la couleur et définit des paires de couleurs (-1 pour le fond transparent)
+    start_color();
+    use_default_colors();
+    init_pair(COULEURS_CONTOUR, COLOR_WHITE, -1);
+    init_pair(COULEURS_MOT, COLOR_CYAN, -1);
+    init_pair(COULEURS_BIENPLACE, COLOR_GREEN, -1);
+    init_pair(COULEURS_QUESTION, COLOR_GREEN, -1);
+    init_pair(COULEURS_MALPLACE, COLOR_RED, -1);
+    init_pair(COULEURS_ERREUR, COLOR_RED, -1);
 }
 
 /// @brief Terminer la console ncurses
@@ -39,10 +51,15 @@ void AfficherTexteSansRetour(char *texteAAfficher){
     printw("%s", texteAAfficher);
 }
 
-/// @brief Affiche une chaine de caracteres à la position courante dans la console ncurses sans retour à la ligne
+/// @brief Affiche une chaine de caracteres avec un espace entre chaque lettre à la position courante
+///        dans la console ncurses sans retour à la ligne
 /// @param texteAAfficher chaine de caracteres à afficher (pointeur)
 void AfficherMotEspaceSansRetour(char *texteAAfficher){
-    printw("%s", texteAAfficher);
+    AfficherCharSansRetour(' ', 1);
+    for (int carPos = 0; carPos < 4; carPos++){
+        AfficherCharSansRetour(texteAAfficher[carPos], 1);
+        AfficherCharSansRetour(' ', 1);
+    }
 }
 
 /// @brief Affiche un caractere à la position courante dans la console ncurses sans retour à la ligne
@@ -57,7 +74,9 @@ void AfficherCharSansRetour(unsigned char caractereAAfficher, int repetition){
 /// @brief Affiche un nombre entier à la position courante dans la console ncurses sans retour à la ligne
 /// @param nombreAAfficher le nombre à afficher
 void AfficherNombreSansRetour(int nombreAAfficher){
+    attron(COLOR_PAIR(COULEURS_MOT));
     printw("%d", nombreAAfficher);
+    attroff(COLOR_PAIR(COULEURS_MOT));
 }
 
 /// @brief Affiche un caractère spécial à la position courante dans la console ncurses sans retour à la ligne
@@ -77,6 +96,7 @@ void AfficherTexteDansCadre(char * texteAAfficher){
     int lenText = strlen(texteAAfficher);
 
     // Haut du cadre
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_ULCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, lenText);
@@ -86,7 +106,9 @@ void AfficherTexteDansCadre(char * texteAAfficher){
     RetourALaLigne();
     AfficherCharSansRetour('\t', 1);
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
+    attron(COLOR_PAIR(COULEURS_MOT));
     printw("%s", texteAAfficher);
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
 
     // Bas du cadre
@@ -95,6 +117,7 @@ void AfficherTexteDansCadre(char * texteAAfficher){
     AfficherCharSpecialSansRetour(ACS_LLCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, lenText);
     AfficherCharSpecialSansRetour(ACS_LRCORNER, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
 
 }
 
@@ -104,6 +127,7 @@ void AfficherTexteDansCadre(char * texteAAfficher){
 /// @param codeDErreur Le code d'erreur eventuel
 void AfficherErreurEtTerminer(char *texteDErreur, int codeDErreur){
     EffacerEcran();
+    attron(COLOR_PAIR(COULEURS_ERREUR));
     AfficherTexteDansCadre("Erreur");
     RetourALaLigne();
     AfficherTexteIndenteSansRetour(texteDErreur);
@@ -121,22 +145,17 @@ void AfficherErreurEtTerminer(char *texteDErreur, int codeDErreur){
 void AfficherHautDeJeu(char * motAAfficher){
 
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_ULCORNER, 1);
     if (motAAfficher){
-
-        // Affiche mot avec espaces
-        AfficherCharSansRetour(' ', 1);
-        for (int carPos = 0; carPos < 4; carPos++){
-            AfficherCharSansRetour(motAAfficher[carPos], 1);
-            AfficherCharSansRetour(' ', 1);
-        }
-
+        AfficherMotEspaceSansRetour(motAAfficher);
     } else {
         AfficherCharSpecialSansRetour(ACS_HLINE, 9);
     }
     AfficherCharSpecialSansRetour(ACS_TTEE, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 4);
     AfficherCharSpecialSansRetour(ACS_URCORNER, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
 }
 
@@ -147,21 +166,27 @@ void AfficherHautDeJeu(char * motAAfficher){
 void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreLettresMalplacées)
 {
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
 
     // Affiche mot avec espaces
-    AfficherCharSansRetour(' ', 1);
-    for (int carPos = 0; carPos < 4; carPos++){
-        AfficherCharSansRetour(motAAfficher[carPos], 1);
-        AfficherCharSansRetour(' ', 1);
-    }
+    attron(COLOR_PAIR(COULEURS_MOT));
+    AfficherMotEspaceSansRetour(motAAfficher);
+    attroff(COLOR_PAIR(COULEURS_MOT));
 
     // Affiche symboles
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
+    attron(COLOR_PAIR(COULEURS_BIENPLACE));
     AfficherCharSansRetour('+', nbreLettresBienplacées);
+    attron(COLOR_PAIR(COULEURS_MALPLACE));
     AfficherCharSansRetour('-', nbreLettresMalplacées);
+    attroff(COLOR_PAIR(COULEURS_MALPLACE));
     AfficherCharSansRetour(' ', 4 - nbreLettresBienplacées - nbreLettresMalplacées); // Complète avec des espaces
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
 }
 
@@ -169,11 +194,13 @@ void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreL
 void AfficherSeparateurDeJeu(){
 
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_LTEE, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 9);
     AfficherCharSpecialSansRetour(ACS_PLUS, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 4);
     AfficherCharSpecialSansRetour(ACS_RTEE, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
 }
 
@@ -181,10 +208,12 @@ void AfficherSeparateurDeJeu(){
 void AfficherBasDeJeu()
 {
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_LLCORNER, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 9);
     AfficherCharSpecialSansRetour(ACS_BTEE, 1);
     AfficherCharSpecialSansRetour(ACS_HLINE, 4);
     AfficherCharSpecialSansRetour(ACS_LRCORNER, 1);
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
 }

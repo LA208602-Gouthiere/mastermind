@@ -17,6 +17,7 @@ char * LireTexte(){
    noecho();
 
    // Ajoute les caractères au string tant que ENTER n'est pas appuyé
+   attron(COLOR_PAIR(COULEURS_MOT));
    carPos = 0;
    while ((caractere = getch()) != '\n') {
 
@@ -43,7 +44,8 @@ char * LireTexte(){
          getch(); getch();
       }
    }
-   
+   attroff(COLOR_PAIR(COULEURS_MOT));
+
    // Ajout du null byte
    texte[carPos] = '\0';
    

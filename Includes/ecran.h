@@ -10,9 +10,9 @@ static const int NombreDeTabulationAGauche = 3;
 #define COULEURS_CONTOUR 1
 #define COULEURS_MOT 2
 #define COULEURS_BIENPLACE 3
-#define COULEURS_QUESTION 3
-#define COULEURS_MALPLACE 4
-#define COULEURS_ERREUR 4
+#define COULEURS_QUESTION 4
+#define COULEURS_MALPLACE 5
+#define COULEURS_ERREUR 6
 #endif
 
 // Déclaration des fonctions du module
