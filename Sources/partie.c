@@ -87,6 +87,7 @@ bool JouerPartie(struct Partie *partieEnCours){
 
     bool debug = false;
     char * motLu;
+    int longueurMotLu;
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
@@ -148,7 +149,10 @@ bool JouerPartie(struct Partie *partieEnCours){
                     }
                     
                     motLu = LireTexte();
-                } while (strlen(motLu) > 10 || strlen(motLu) <= 0); // Pseudo doit étre en 1 et 10 caractères
+                    longueurMotLu = strlen(motLu);
+
+                  // Pseudo doit être en 1 et 10 caractères et ne peut être composé uniquement d'espaces
+                } while ( (longueurMotLu > 10) || (longueurMotLu <= 0) || (strspn(motLu, " ") == longueurMotLu));
                 strcpy(partieEnCours->nomJoueur, motLu);
                 
                 // Vérifie sauvegarde du score
