@@ -82,9 +82,9 @@ struct Dictionnaire * LireDictionnaire(char *nomDeFichier, struct Dico_Message *
             dictionnaire->nbMots++;
 
         } else {
-            // Vide le dictionnaire, remplit le message d'erreur et quitte la boucle
-            EffacerDictionnaire(dictionnaire);
+            // Remplit le message d'erreur, vide le dictionnaire et quitte la boucle
             sprintf(messageDeRetour->messageErreur, "Le mot à la ligne %d du fichier %s est invalide", dictionnaire->nbMots+1, nomDeFichier);
+            EffacerDictionnaire(dictionnaire);
             messageDeRetour->codeErreur = 0;
             fclose(fichier);
             return NULL;
