@@ -12,7 +12,6 @@ bool ExecuterInstructionSQL(MYSQL *sqlConnection, char *instructionSQL, struct D
     if (mysql_query(sqlConnection, instructionSQL)){
         strcpy(messageDeRetour->messageErreur, mysql_error(sqlConnection));
         messageDeRetour->codeErreur = mysql_errno(sqlConnection);
-        fprintf(stderr, "%s\n", messageDeRetour->messageErreur);
         return true;
     }
     return false;
@@ -84,18 +83,32 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
     MYSQL_ROW sqlRow;
     char * requete;
     int id_joueur;
+    int longueurNomJoueur;
 
-    // Verification du nom du joueur
-    if(strlen(nomJoueur) > 10 || strlen(nomJoueur) <= 0 ){
+    // Verification du nom du joueur (doit être en 1 et 10 caractères et ne peut être composé uniquement d'espaces)
+    longueurNomJoueur = strlen(nomJoueur);
+    if((longueurNomJoueur > 10) || (longueurNomJoueur <= 0) || (strspn(nomJoueur, " ") == longueurNomJoueur)){
+        strcpy(messageDeRetour->messageErreur, "Le pseudo est invalide");
+        messageDeRetour->codeErreur = 0;
         return -1;
     }
 
     // Génère la requête
-    char * selectJoueur = "SELECT id_joueur FROM joueurs WHERE nom_joueur='%s'";
+    char * selectJoueur = "SELECT id_joueur FROM joueurs WHERE nom_joueur=TRIM('%s')"; // Trim permet de tronquer les espaces en trop
     requete = (char *)malloc(strlen(selectJoueur) + strlen(nomJoueur) +1);
+
+    // Vérifie allocation mémoire
+    if (!requete){
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour le pseudo");
+        messageDeRetour->codeErreur = 0;
+        return -1;
+    }
     sprintf(requete, selectJoueur, nomJoueur);
 
-    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+    // Exécute la requête
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
+        return -1;
+    }
 
     // Stocke le résultat
     if(!(sqlResult = mysql_store_result(sqlConnection))){
@@ -112,8 +125,16 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
     }
 
     // Si le joueur n'existe pas, l'ajouter et récupérer l'ID auto-incrémenté
-    sprintf(requete, "INSERT INTO joueurs (nom_joueur, score_joueur) VALUES ('%s', 0)", nomJoueur);
-    ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour);
+    
+    // Génère la requête
+    char * insertJoueur = "INSERT INTO joueurs (nom_joueur, score_joueur) VALUES (TRIM('%s'), 0)";
+    requete = (char *)malloc(strlen(insertJoueur) + strlen(nomJoueur) +1);
+    sprintf(requete, insertJoueur, nomJoueur);
+
+    // Exécute la requête
+    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
+        return -1;
+    }
 
     free(requete);
     // Rappel récursif pour obtenir l'ID du nouveau joueur
@@ -144,9 +165,10 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
 
     // Génère la requête
     score = 11 - nombreDEssais;
-    char * selectJoueur = "UPDATE joueurs SET score_joueur=%d WHERE id_joueur=%d";
+    // Ne remplace le score dans la table que s'il est inférieur au nouveau score
+    char * selectJoueur = "UPDATE joueurs SET score_joueur=%d WHERE id_joueur=TRIM('%d') AND score_joueur < %d";
     char * requete = (char *)malloc(strlen(selectJoueur) + 20); // + 20 pour les valeurs
-    sprintf(requete, selectJoueur, score, id_joueur);
+    sprintf(requete, selectJoueur, score, id_joueur, score);
 
     // Vérifie le résultat de la requête
     if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
