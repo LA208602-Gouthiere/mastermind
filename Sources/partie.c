@@ -97,7 +97,9 @@ bool JouerPartie(struct Partie *partieEnCours){
         // Saisie
         do{
             AfficherPartie(partieEnCours, debug);
+            attron(COLOR_PAIR(COULEURS_QUESTION));
             AfficherTexteIndenteSansRetour("Entrez un mot de 4 lettres (ENTER pour abandonner) : ");
+            attroff(COLOR_PAIR(COULEURS_QUESTION));
             motLu = LireTexte();
 
             // Mode debug activé quand * est pressé
@@ -137,6 +139,7 @@ bool JouerPartie(struct Partie *partieEnCours){
                 // Saisie du pseudo
                 do {
                     AfficherPartie(partieEnCours, debug);
+                    attron(COLOR_PAIR(COULEURS_QUESTION));
                     if(resultat->nbLettreBienPlacees == 4){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
@@ -147,6 +150,7 @@ bool JouerPartie(struct Partie *partieEnCours){
                         RetourALaLigne();
                         AfficherTexteIndenteSansRetour("Entrez votre pseudo (max 10 caractères) : ");
                     }
+                    attroff(COLOR_PAIR(COULEURS_QUESTION));
                     
                     motLu = LireTexte();
                     longueurMotLu = strlen(motLu);
@@ -201,7 +205,9 @@ void AfficherMeilleursScores(){
     }
 
     RetourALaLigne();
+    attron(COLOR_PAIR(COULEURS_QUESTION));
     AfficherTexteIndenteSansRetour("Enfoncez ENTER pour continuer ");
+    attroff(COLOR_PAIR(COULEURS_QUESTION));
     LireTexte();
     free(messageDeRetour);
     free(tabScores);

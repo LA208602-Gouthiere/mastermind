@@ -4,27 +4,28 @@
 #include "./Includes/ecran.h"
 #include "./Includes/mots.h"
 #include "./Includes/partie.h"
+#include "./Includes/menus.h"
+#include "./Includes/titre.h"
 
 int main(){
 
     struct Partie * partie;
     struct Dictionnaire * dictionnaire;
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
-    bool finPartie;
- 
+    
+    // Initialisation
+    srand(time(NULL));
     InitialiserEcran();
     dictionnaire = LireDictionnaire("liste_francais_4.txt", messageDeRetour);
+    
     // Vérifie si le dictionnaire est bien remplis et lance la partie
     if(dictionnaire) {
 
-        do {
-            partie = CreerPartie(dictionnaire);
-            finPartie = JouerPartie(partie);
-            EffacerPartie(partie);
-            AfficherMeilleursScores();
+        // Affichage du menu
+        AfficherIntro(4, 11);
+        AfficherMenuPrincipal(14, 11, partie, dictionnaire);
 
-        } while(finPartie); // Lance une nouvelle partie si la précédente est terminée et qu'elle n'a pas été abandonnée
-
+        // Vide le dictionnaire à la fin du programme
         EffacerDictionnaire(dictionnaire);
         free(messageDeRetour);
         

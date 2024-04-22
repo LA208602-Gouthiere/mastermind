@@ -12,6 +12,10 @@
                 "${workspaceFolder}/Sources/mots.c",
                 "${workspaceFolder}/Sources/partie.c",
                 "${workspaceFolder}/Sources/score.c",
+                "${workspaceFolder}/Sources/menus.c",
+                "${workspaceFolder}/Sources/affichermenu.c",
+                "${workspaceFolder}/Sources/afficherregles.c",
+                "${workspaceFolder}/Sources/titre.c",
                 "${workspaceFolder}/mastermind.c",
                 "-I",
                 "/usr/include/mariadb",
@@ -24,7 +28,7 @@
                 "-l",
                 "mariadb",
                 "-l",
-                "ncurses"
+                "ncursesw"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"
