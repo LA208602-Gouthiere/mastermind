@@ -22,10 +22,17 @@ int AfficherMenu(int lin, int col, char *titre, char **listeChoix, int nbChoix, 
     }
 
     // Trace une bordure sur le contour de la fenêtre
+    wattron(fenetreMenu, COLOR_PAIR(COULEURS_CONTOUR));
     box(fenetreMenu, 0, 0);
-    mvwprintw(fenetreMenu, 0, 2, "[%s]", titre);
+    mvwprintw(fenetreMenu, 0, 2, "[");
+    wattron(fenetreMenu, COLOR_PAIR(COULEURS_MOT));
+    wprintw(fenetreMenu, "%s", titre);
+    wattron(fenetreMenu, COLOR_PAIR(COULEURS_CONTOUR));
+    wprintw(fenetreMenu, "]");
+    wattron(fenetreMenu, COLOR_PAIR(COULEURS_MOT));
     mvwprintw(fenetreMenu, nbChoix+1, 30, " ENTER pour sélectionner ");
     mvwprintw(fenetreMenu, nbChoix+1, 3, " FLÈCHES pour naviguer ");
+    wattroff(fenetreMenu, COLOR_PAIR(COULEURS_MOT));
     wrefresh(fenetreMenu);
 
     // Permet l'utilisation des flèches du clavier

@@ -50,30 +50,13 @@ void AfficherIntro(int lin, int col){
     attroff(COLOR_PAIR(1));
 
     AfficherLecteurDisquetteHaut(lin-4, col+4);
-
-    // Textes des "bruitages" disquette
-    mvprintw(lin+4, col+40, "*clic*");
-    refresh();
-    SleepMs(1000);
-    mvprintw(lin+4, col+40, "      ");
-    refresh();
-    SleepMs(1000);
-    mvprintw(lin+4, col+34, "*crrr, crrr, crrr*");
-    refresh();
-    SleepMs(1400);
-    mvprintw(lin+4, col+34, "                  ");
-    refresh();
-    SleepMs(1000);
-    mvprintw(lin+4, col+28, "*tchik-tchik, tchik-tchik*");
-    refresh();
-    SleepMs(1400);
-    mvprintw(lin+4, col+28, "                          ");
     refresh();
     SleepMs(1000);
 
     // Affichage du titre
     clear();
     refresh();
+    
     AfficherTitre(lin, col, true);
 
     // Rétabli le curseur
@@ -153,6 +136,7 @@ void AfficherTitre(int lin, int col, bool animation) {
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
     // Si l'animation doit être jouée
+    attron(COLOR_PAIR(COULEURS_MOT));
     if (animation){
 
         // Créer un tableau pour les positions des caractères et vérifie s'il est bien rempli
@@ -184,6 +168,7 @@ void AfficherTitre(int lin, int col, bool animation) {
         }
         refresh();
     }
+    attroff(COLOR_PAIR(COULEURS_MOT));
 
     // Vide le dictionnaire d'erreur
     free(messageDeRetour);

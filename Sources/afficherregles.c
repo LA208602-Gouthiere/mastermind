@@ -23,13 +23,21 @@ void AfficherRegles(int lin, int col){
     // Créé une fenêtre pour les règles
     WINDOW * bordureFenetre = newwin(20, 71, lin, col); // hauteur (on rajoute 2 pour les bordures), largeur, coord
     WINDOW * fenetre = newwin(16, 67, lin+2, col+2); // hauteur (on rajoute 2 pour les bordures), largeur, coord
+    wattron(bordureFenetre, COLOR_PAIR(COULEURS_CONTOUR));
     box(bordureFenetre, 0, 0);
-
-    mvwprintw(bordureFenetre, 0, 2, "[Règles du jeu]");
+    
+    mvwprintw(bordureFenetre, 0, 2, "[");
+    wattron(bordureFenetre, COLOR_PAIR(COULEURS_MOT));
+    wprintw(bordureFenetre, "Règles du jeu");
+    wattron(bordureFenetre, COLOR_PAIR(COULEURS_CONTOUR));
+    wprintw(bordureFenetre, "]");
+    wattroff(bordureFenetre, COLOR_PAIR(COULEURS_CONTOUR));
     mvwprintw(fenetre, 0, 0, "%s", pages[0]);
+    wattron(bordureFenetre, COLOR_PAIR(COULEURS_MOT));
     mvwprintw(bordureFenetre, 19, 3, " FLÈCHES pour naviguer ");
     mvwprintw(bordureFenetre, 19, 28, " ENTER pour revenir au menu ");
     mvwprintw(bordureFenetre, 19, 58, " Page 1/3 ");
+    wattroff(fenetre, COLOR_PAIR(COULEURS_MOT));
     wrefresh(bordureFenetre);
     wrefresh(fenetre);
 
