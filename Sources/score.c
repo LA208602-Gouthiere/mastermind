@@ -182,6 +182,27 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
     return true;
 }
 
+/// @brief Fonction pour vider la table des scores
+/// @param baseDeTest Booleen qui indique si c'est la base de données pour les tests unitaires ou pas (et donc: de production)
+/// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
+/// @return Un booléen qui indique si la suppression s'est faite ou pas
+bool SupprimerScores(bool baseDeTest, struct Dico_Message *messageDeRetour){
+    
+    MYSQL * sqlConnection;
+    
+    if(!(sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour))){
+        return false;
+    }
+
+    // Vérifie le résultat de la requête
+    if (ExecuterInstructionSQL(sqlConnection, "DELETE FROM joueurs;", messageDeRetour)){
+        mysql_close(sqlConnection);
+        return false;
+    }
+
+    mysql_close(sqlConnection);
+    return true;
+}
 
 /// @brief Fonction pour lire les meilleurs scores dans la base de données
 /// @param baseDeTest Booleen qui indique si c'est la base de données pour les tests unitaires ou pas (et donc: de production)
@@ -221,7 +242,7 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
     // Définit une zone mémoire pour le tableau de structures Points
     tabScores = (struct Points *)malloc(nombreDeScore * sizeof(struct Points));
     // Remplit le tableau de scores
-    for (int noJoueur = 0; noJoueur < 10; noJoueur++){
+    for (int noJoueur = 0; noJoueur < nombreDeScore; noJoueur++){
         
         if(sqlRow = mysql_fetch_row(sqlResult)){ // Si il reste des scores dans la DB
             tabScores[noJoueur].score = atoi(sqlRow[2]);

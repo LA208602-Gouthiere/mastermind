@@ -126,7 +126,7 @@ void test_sauverScore_longueur(){
     free(messageDeRetour);
 }
 
-// Tests obtention des meilleurs scores
+// Test obtention des meilleurs scores
 void test_meilleursScores_OK(){
     ViderDBDeTest();
 
@@ -145,9 +145,41 @@ void test_meilleursScores_OK(){
     TEST_ASSERT_EQUAL_INT(10, tabScores[0].score);
     TEST_ASSERT_EQUAL_STRING("joueur5", tabScores[4].name);
     TEST_ASSERT_EQUAL_INT(6, tabScores[4].score);
+    TEST_ASSERT_EQUAL_STRING("", tabScores[5].name); // Lorsqu'on récupère +de joueurs qu'il n'y en a dans la DB
+    TEST_ASSERT_EQUAL_INT(-1, tabScores[5].score);   // le nom est une chaine vide et le score vaut -1
 
     free(messageDeRetour);
     free(tabScores);
+}
+
+// Test vider la table
+void test_supprimerScores_OK(){
+    ViderDBDeTest();
+
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    struct Points * tabScores;
+    bool resultat;
+    
+    // Ajoute des joueurs à la DB
+    SauverScore(true, "joueur1", 1, messageDeRetour);
+    SauverScore(true, "joueur2", 2, messageDeRetour);
+    SauverScore(true, "joueur3", 3, messageDeRetour);
+    SauverScore(true, "joueur4", 4, messageDeRetour);
+    SauverScore(true, "joueur5", 5, messageDeRetour);
+    SauverScore(true, "joueur5", 8, messageDeRetour); // Le score moins bon n'est pas sensé remplacer l'ancien
+
+    // Les supprime
+    resultat = SupprimerScores(true, messageDeRetour);
+    TEST_ASSERT_TRUE(resultat);
+
+    // Vérifie s'il n'y a plus de joueurs dans la DB
+    tabScores = LireMeilleursScores(true, 10, messageDeRetour);
+    for (int noJoueur = 0; noJoueur < 10; noJoueur++){
+        TEST_ASSERT_EQUAL_STRING("", tabScores[0].name);
+        TEST_ASSERT_EQUAL_INT(-1, tabScores[0].score);
+    }
+
+    free(messageDeRetour);
 }
 
 // Execute tous les tests de scores dans la base de donnees
@@ -160,4 +192,5 @@ void TestsScores()
     RUN_TEST(test_sauverScore_OK);
     RUN_TEST(test_sauverScore_longueur);
     RUN_TEST(test_meilleursScores_OK);
+    RUN_TEST(test_supprimerScores_OK);
 }
