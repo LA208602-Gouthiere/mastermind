@@ -2,9 +2,9 @@
 #include "../Includes/mots.h"
 
 // Test qui lit un dictionnaire sans erreur
-// Il verifie que les informations suivantes sont bien lue:
+// Il verifie que les informations suivantes sont bien lues:
 // - Structure Dictionnaire non nulle
-// - Nombre de mots correct
+// - Nombre correct de mots
 // - Verification que les mots de la liste sont bien lus
 void TestDictionnaire_OK(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
@@ -15,7 +15,7 @@ void TestDictionnaire_OK(){
     TEST_ASSERT_NOT_NULL(dictionnaire);
     TEST_ASSERT_EQUAL_INT(416, dictionnaire->nbMots);
 
-    // Vérifie si le premier et dernier mots sont bient sotckés
+    // Vérifie si le premier et dernier mots sont bien stockés
     TEST_ASSERT_EQUAL_STRING("abri", dictionnaire->listeMots[0]);
     TEST_ASSERT_EQUAL_STRING("zone", dictionnaire->listeMots[415]);
 
