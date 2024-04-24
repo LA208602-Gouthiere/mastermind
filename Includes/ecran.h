@@ -16,7 +16,7 @@ static const int NombreDeTabulationAGauche = 3;
 #endif
 
 // Déclaration des fonctions du module
-//void ChoisirModeEcran(bool couleur);
+void ChoisirModeEcran(bool couleur);
 void InitialiserEcran();
 void TerminerEcran();
 void EffacerEcran();

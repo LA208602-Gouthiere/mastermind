@@ -101,10 +101,10 @@ void AfficherMenuCouleurs(int lin, int col){
         
         switch (choix){
             case 0:
-                /* code */
+                ChoisirModeEcran(false);
                 break;
             case 1:
-                /* code */
+                ChoisirModeEcran(true);
                 break;
         }
     } while (choix != 2); // Continue à afficher le menu couleurs tant que "Quitter" n'est pas sélectionné

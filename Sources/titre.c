@@ -21,11 +21,6 @@ void AfficherIntro(int lin, int col){
     curs_set(0);
     noecho();
 
-    // Active la couleur et définit une paire de couleurs (bleu sur fond par défaut)
-    start_color();
-    use_default_colors();
-    init_pair(1, COLOR_BLUE, -1);
-
     // Animation disquette
     for (int translation = 0; translation < 37; translation++) {
         clear();
@@ -45,9 +40,9 @@ void AfficherIntro(int lin, int col){
     AfficherLecteurDisquetteBas(lin-1, col+4);
 
     // Disquette en bleu
-    attron(COLOR_PAIR(1));
+    attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherDisquette(lin-15, col+15);
-    attroff(COLOR_PAIR(1));
+    attroff(COLOR_PAIR(COULEURS_CONTOUR));
 
     AfficherLecteurDisquetteHaut(lin-4, col+4);
     refresh();

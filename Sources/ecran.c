@@ -16,12 +16,27 @@ void InitialiserEcran(){
     // Active la couleur et définit des paires de couleurs (-1 pour le fond transparent)
     start_color();
     use_default_colors();
-    init_pair(COULEURS_CONTOUR, COLOR_WHITE, -1);
-    init_pair(COULEURS_MOT, COLOR_CYAN, -1);
-    init_pair(COULEURS_BIENPLACE, COLOR_GREEN, -1);
-    init_pair(COULEURS_QUESTION, COLOR_GREEN, -1);
-    init_pair(COULEURS_MALPLACE, COLOR_RED, -1);
-    init_pair(COULEURS_ERREUR, COLOR_RED, -1);
+    ChoisirModeEcran(true);
+}
+
+/// @brief Permet d'activer ou désactiver la couleur
+/// @param couleur true si activée, false si désactivée
+void ChoisirModeEcran(bool couleur){
+    if(couleur){
+        init_pair(COULEURS_CONTOUR, COLOR_BLUE, -1);
+        init_pair(COULEURS_MOT, COLOR_CYAN, -1);
+        init_pair(COULEURS_BIENPLACE, COLOR_GREEN, -1);
+        init_pair(COULEURS_QUESTION, COLOR_GREEN, -1);
+        init_pair(COULEURS_MALPLACE, COLOR_RED, -1);
+        init_pair(COULEURS_ERREUR, COLOR_RED, -1);
+    } else {
+        init_pair(COULEURS_CONTOUR, COLOR_WHITE, -1);
+        init_pair(COULEURS_MOT, COLOR_WHITE, -1);
+        init_pair(COULEURS_BIENPLACE, COLOR_WHITE, -1);
+        init_pair(COULEURS_QUESTION, COLOR_WHITE, -1);
+        init_pair(COULEURS_MALPLACE, COLOR_WHITE, -1);
+        init_pair(COULEURS_ERREUR, COLOR_WHITE, -1);
+    }
 }
 
 /// @brief Terminer la console ncurses
