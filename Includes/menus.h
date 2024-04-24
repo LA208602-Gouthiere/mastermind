@@ -11,5 +11,6 @@ void AfficherMenuPrincipal(int lin, int col, struct Partie * partie, struct Dict
 void AfficherMenuParametres(int lin, int col);
 void RunDifficultiesMenu(int lin, int col);
 void AfficherMenuCouleurs(int lin, int col);
+void AfficherMenuConfirmationSuppressionDB(int lin, int col);
 
 #endif

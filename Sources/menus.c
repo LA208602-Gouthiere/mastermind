@@ -3,6 +3,7 @@
 #include "../Includes/affichermenu.h"
 #include "../Includes/afficherregles.h"
 #include "../Includes/titre.h"
+#include "../Includes/score.h"
 
 /// @brief Affiche le menu principal
 /// @param lin numéro de ligne à l'origine
@@ -74,7 +75,7 @@ void AfficherMenuParametres(int lin, int col){
                 AfficherMenuCouleurs(lin, col);
                 break;
             case 1:
-                /* code */
+                AfficherMenuConfirmationSuppressionDB(lin, col);
                 break;
         }
     } while (choix != 2); // Continue à afficher le menu paramètres tant que "Quitter" n'est pas sélectionné
@@ -107,6 +108,30 @@ void AfficherMenuCouleurs(int lin, int col){
                 break;
         }
     } while (choix != 2); // Continue à afficher le menu couleurs tant que "Quitter" n'est pas sélectionné
+
+    // Vide le dico d'erreur
+    free(messageDeRetour);
+}
+
+/// @brief Affiche le menu de confirmation de la suppression de la DB
+/// @param lin numéro de ligne à l'origine
+/// @param col numéro de colonne à l'origine
+void AfficherMenuConfirmationSuppressionDB(int lin, int col){
+    int choix;
+    char * listeChoix[2] = {"Oui", "Non"};
+    struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+
+    // Vérifie l'affichage du menu
+    choix = AfficherMenu(lin, col, "Êtes-vous sûr de supprimer les scores ?", listeChoix, 2, messageDeRetour);
+    if (choix == -1){
+        AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
+    }
+    
+    // Supprime les score si Oui est sélectionné
+    if (choix == 0){
+        if (!SupprimerScores(false, messageDeRetour))
+            AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
+    }
 
     // Vide le dico d'erreur
     free(messageDeRetour);
