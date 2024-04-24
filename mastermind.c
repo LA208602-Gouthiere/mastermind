@@ -12,11 +12,17 @@ int main(){
     struct Partie * partie;
     struct Dictionnaire * dictionnaire;
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    char * nomFichier;
     
     // Initialisation
     srand(time(NULL));
     InitialiserEcran();
-    dictionnaire = LireDictionnaire("liste_francais_4.txt", messageDeRetour);
+
+    // Lecture du dictionnaire
+    nomFichier = malloc(strlen("liste_francais_%d.txt")+10);
+    sprintf(nomFichier, "liste_francais_%d.txt", LongueurDesMots);
+    dictionnaire = LireDictionnaire(nomFichier, messageDeRetour);
+    free(nomFichier);
     
     // Vérifie si le dictionnaire est bien remplis et lance la partie
     if(dictionnaire) {

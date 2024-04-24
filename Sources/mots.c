@@ -9,11 +9,11 @@
 /// @return true si le mot est correct, false si le mot n'est pas correct
 bool VerifierMot(char *motAVerifier){
 
-    if(strlen(motAVerifier) != 4){
+    if(strlen(motAVerifier) != LongueurDesMots){
         return false;
     }
 
-    for (int carPos = 0; carPos < 4; carPos++){
+    for (int carPos = 0; carPos < LongueurDesMots; carPos++){
         if(motAVerifier[carPos] < 'a' || motAVerifier[carPos] > 'z')
             return false;
     }
@@ -141,7 +141,7 @@ bool ComparerMots(char *solution, char *motPlace, struct ResultatLigne *resultat
     resultat->nbLettreMalPlacees = 0;
 
     // Compte les occurrences de chaque lettre dans solution et motPlace
-    for (int carPos = 0; carPos < 4; carPos++){
+    for (int carPos = 0; carPos < LongueurDesMots; carPos++){
 
         // Si même lettre
         if(motPlace[carPos] == solution[carPos]) {

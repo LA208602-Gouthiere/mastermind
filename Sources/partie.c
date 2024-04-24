@@ -42,9 +42,13 @@ void EffacerPartie(struct Partie * partieEnCours){
 /// @param modeDebug Booleen qui indique si on est en mode debug (qui affiche la solution)
 void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
     
+    // Pour les cases vide
+    char motVide[20];
+    memset(motVide, ' ', LongueurDesMots);
+
     // Cas spécial lorsque tous les essais ont été utilisés et qu'on a 11 tentatives
     int nbCases = partieEnCours->numEssaiCourant;
-    if(nbCases > 10)
+    if(nbCases > NbreMaxDEssais)
         nbCases--;
 
     // On efface tout et on affiche le jeu dans son état actuel
@@ -55,15 +59,16 @@ void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
     for (int noMot = 0; noMot < nbCases; noMot++){
         
         AfficherMotDeJeu(partieEnCours->motsEssayes[noMot], partieEnCours->resultatsEssais[noMot]->nbLettreBienPlacees, partieEnCours->resultatsEssais[noMot]->nbLettreMalPlacees);
-        if (noMot != 9)
+        if (noMot != NbreMaxDEssais-1)
             AfficherSeparateurDeJeu();
     }
 
     // Affiche les cases restantes
-    for (int noCase = nbCases; noCase < 10; noCase++){
+    for (int noCase = nbCases; noCase < NbreMaxDEssais; noCase++){
         
-        AfficherMotDeJeu("    ", 0, 0);
-        if (noCase != 9)
+
+        AfficherMotDeJeu(motVide, 0, 0);
+        if (noCase != NbreMaxDEssais-1)
             AfficherSeparateurDeJeu();
     }
     AfficherBasDeJeu();
@@ -90,6 +95,11 @@ bool JouerPartie(struct Partie *partieEnCours){
     int longueurMotLu;
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    char * invite;
+
+    // Formate l'invite de saisie
+    invite = malloc(strlen("Entrez un mot de %d lettres (ENTER pour abandonner) : ")+10);
+    sprintf(invite, "Entrez un mot de %d lettres (ENTER pour abandonner) : ", LongueurDesMots);
 
     partieEnCours->numEssaiCourant = 0;
     do{
@@ -98,7 +108,7 @@ bool JouerPartie(struct Partie *partieEnCours){
         do{
             AfficherPartie(partieEnCours, debug);
             attron(COLOR_PAIR(COULEURS_QUESTION));
-            AfficherTexteIndenteSansRetour("Entrez un mot de 4 lettres (ENTER pour abandonner) : ");
+            AfficherTexteIndenteSansRetour(invite);
             attroff(COLOR_PAIR(COULEURS_QUESTION));
             motLu = LireTexte();
 
@@ -134,13 +144,13 @@ bool JouerPartie(struct Partie *partieEnCours){
 
             partieEnCours->numEssaiCourant++;
             // Lors d'une victoire ou d'une défaite
-            if (resultat->nbLettreBienPlacees == 4 || partieEnCours->numEssaiCourant == 10){
+            if (resultat->nbLettreBienPlacees == LongueurDesMots || partieEnCours->numEssaiCourant == NbreMaxDEssais){
                 
                 // Saisie du pseudo
                 do {
                     AfficherPartie(partieEnCours, debug);
                     attron(COLOR_PAIR(COULEURS_QUESTION));
-                    if(resultat->nbLettreBienPlacees == 4){
+                    if(resultat->nbLettreBienPlacees == LongueurDesMots){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
                         partieEnCours->numEssaiCourant++;
@@ -171,6 +181,7 @@ bool JouerPartie(struct Partie *partieEnCours){
 
     } while (true);
 
+    free(invite);
     free(motLu);
     return true;
 }
@@ -184,7 +195,7 @@ void AfficherMeilleursScores(){
     struct Points * tabScores;
 
     // Vérifie si le tableau des score est NULL
-    if(!(tabScores = LireMeilleursScores(false, 10, messageDeRetour)))
+    if(!(tabScores = LireMeilleursScores(false, NbreDeScoresAAfficher, messageDeRetour)))
         AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
     
     EffacerEcran();
@@ -194,7 +205,7 @@ void AfficherMeilleursScores(){
     RetourALaLigne();
 
     // Parcourt le tableau des scores pour les afficher ligne par ligne
-    for (int noJoueur = 0; noJoueur < 10; noJoueur++){
+    for (int noJoueur = 0; noJoueur < NbreDeScoresAAfficher; noJoueur++){
         // Si le score existe
         if(tabScores[noJoueur].score != -1){
             AfficherTexteIndenteSansRetour(tabScores[noJoueur].name);

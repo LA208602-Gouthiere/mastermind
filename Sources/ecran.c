@@ -56,7 +56,7 @@ void AfficherTexteSansRetour(char *texteAAfficher){
 /// @param texteAAfficher chaine de caracteres à afficher (pointeur)
 void AfficherMotEspaceSansRetour(char *texteAAfficher){
     AfficherCharSansRetour(' ', 1);
-    for (int carPos = 0; carPos < 4; carPos++){
+    for (int carPos = 0; carPos < LongueurDesMots; carPos++){
         AfficherCharSansRetour(texteAAfficher[carPos], 1);
         AfficherCharSansRetour(' ', 1);
     }
@@ -150,10 +150,10 @@ void AfficherHautDeJeu(char * motAAfficher){
     if (motAAfficher){
         AfficherMotEspaceSansRetour(motAAfficher);
     } else {
-        AfficherCharSpecialSansRetour(ACS_HLINE, 9);
+        AfficherCharSpecialSansRetour(ACS_HLINE, (2*LongueurDesMots)+1);
     }
     AfficherCharSpecialSansRetour(ACS_TTEE, 1);
-    AfficherCharSpecialSansRetour(ACS_HLINE, 4);
+    AfficherCharSpecialSansRetour(ACS_HLINE, LongueurDesMots);
     AfficherCharSpecialSansRetour(ACS_URCORNER, 1);
     attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
@@ -183,7 +183,7 @@ void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreL
     attron(COLOR_PAIR(COULEURS_MALPLACE));
     AfficherCharSansRetour('-', nbreLettresMalplacées);
     attroff(COLOR_PAIR(COULEURS_MALPLACE));
-    AfficherCharSansRetour(' ', 4 - nbreLettresBienplacées - nbreLettresMalplacées); // Complète avec des espaces
+    AfficherCharSansRetour(' ', LongueurDesMots - nbreLettresBienplacées - nbreLettresMalplacées); // Complète avec des espaces
     attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_VLINE, 1);
     attroff(COLOR_PAIR(COULEURS_CONTOUR));
@@ -196,9 +196,9 @@ void AfficherSeparateurDeJeu(){
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_LTEE, 1);
-    AfficherCharSpecialSansRetour(ACS_HLINE, 9);
+    AfficherCharSpecialSansRetour(ACS_HLINE, (2*LongueurDesMots)+1);
     AfficherCharSpecialSansRetour(ACS_PLUS, 1);
-    AfficherCharSpecialSansRetour(ACS_HLINE, 4);
+    AfficherCharSpecialSansRetour(ACS_HLINE, LongueurDesMots);
     AfficherCharSpecialSansRetour(ACS_RTEE, 1);
     attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();
@@ -210,9 +210,9 @@ void AfficherBasDeJeu()
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);
     attron(COLOR_PAIR(COULEURS_CONTOUR));
     AfficherCharSpecialSansRetour(ACS_LLCORNER, 1);
-    AfficherCharSpecialSansRetour(ACS_HLINE, 9);
+    AfficherCharSpecialSansRetour(ACS_HLINE, (2*LongueurDesMots)+1);
     AfficherCharSpecialSansRetour(ACS_BTEE, 1);
-    AfficherCharSpecialSansRetour(ACS_HLINE, 4);
+    AfficherCharSpecialSansRetour(ACS_HLINE, LongueurDesMots);
     AfficherCharSpecialSansRetour(ACS_LRCORNER, 1);
     attroff(COLOR_PAIR(COULEURS_CONTOUR));
     RetourALaLigne();

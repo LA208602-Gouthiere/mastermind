@@ -17,8 +17,8 @@ struct Dico_Message {
 };
 
 // Constantes du jeu
-#define NbreMaxDEssais 10
-#define LongueurMaxNomJoueur 10
-#define LongueurDesMots 4
-#define NbreDeScoresAAfficher 10
+#define NbreMaxDEssais 10 // Attention à ne pas dépasser la hauteur de la console
+// #define LongueurMaxNomJoueur 10 // Limité à 10 dans la DB
+#define LongueurDesMots 4 // Prévoir un fichier liste_français_n avec des mots de n longueur
+#define NbreDeScoresAAfficher 10  // Attention à ne pas dépasser la hauteur de la console
 #endif
