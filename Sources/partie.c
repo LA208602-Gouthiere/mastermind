@@ -146,6 +146,10 @@ bool JouerPartie(struct Partie *partieEnCours){
             // Lors d'une victoire ou d'une défaite
             if (resultat->nbLettreBienPlacees == LongueurDesMots || partieEnCours->numEssaiCourant == NbreMaxDEssais){
                 
+                // Compte le dernier essai en plus si perdu
+                if(resultat->nbLettreBienPlacees != LongueurDesMots)
+                    partieEnCours->numEssaiCourant++;
+
                 // Saisie du pseudo
                 do {
                     AfficherPartie(partieEnCours, debug);
@@ -153,7 +157,6 @@ bool JouerPartie(struct Partie *partieEnCours){
                     if(resultat->nbLettreBienPlacees == LongueurDesMots){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
-                        partieEnCours->numEssaiCourant++;
                         AfficherTexteIndenteSansRetour("Dommage... Le mot était \"");
                         AfficherTexteSansRetour(partieEnCours->solution);
                         AfficherTexteSansRetour("\"");
