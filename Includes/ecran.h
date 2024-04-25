@@ -23,6 +23,7 @@ void EffacerEcran();
 void RetourALaLigne();
 void AfficherTexteIndenteSansRetour(char *texteAAfficher);
 void AfficherTexteSansRetour(char *texteAAfficher);
+void AfficherMotEspaceSansRetour(char *texteAAfficher);
 void AfficherCharSansRetour(unsigned char caractereAAfficher, int repetition);
 void AfficherNombreSansRetour(int nombreAAfficher);
 void AfficherCharSpecialSansRetour(unsigned char caractereAAfficher, int repetition);
