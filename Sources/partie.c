@@ -13,11 +13,20 @@ struct Partie * CreerPartie(struct Dictionnaire * dictionnaire){
     
     struct Partie * partieEnCours = (struct Partie *)malloc(sizeof(struct Partie));
     
+    // Vérifie l'allocation
+    if(!partieEnCours){
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de la création de la partie", 0);
+    }
+    
     // Choisit un mot au hasard
     partieEnCours->solution = dictionnaire->listeMots[rand()%(dictionnaire->nbMots - 1)];
 
     partieEnCours->motsEssayes = NULL;
     partieEnCours->resultatsEssais = (struct ResultatLigne **)malloc(sizeof(struct ResultatLigne *));
+    // Vérifie l'allocation
+    if(!partieEnCours->resultatsEssais){
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de la création de la partie", 0);
+    }
     partieEnCours->nomJoueur[0] = '\0';
     partieEnCours->numEssaiCourant = 0;
     partieEnCours->resultat = false;
@@ -83,7 +92,7 @@ void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
 ///        - Verifier le mot et s'il est correct, calculer le resultat
 ///          (10 si trouve en 1 coup, 9 en 2 coups... 1 en 10 cours)
 ///        - Si le mot n'est pas correct, le resultat est 0.
-///        A la fin de la partie:
+///        À la fin de la partie:
 ///        - Si gagne ou perdu: on demande le nom du jour et on sauve le résultat
 ///        - Si abandon: fin de partie, on affiche la solution
 /// @param partieEnCours Pointeur vers la structure Partie préablement initialisée avec une nouvelle partie
@@ -93,13 +102,20 @@ bool JouerPartie(struct Partie *partieEnCours){
     bool debug = false;
     char * motLu;
     int longueurMotLu;
-    struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
-    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
-    char * invite;
+    struct ResultatLigne * resultat;
+    struct Dico_Message * messageDeRetour;
+    static char inviteSaisie[60];
+
+    resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+
+    // Vérifie l'allocation
+    if(!resultat || !messageDeRetour){
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire pendant la partie", 0);
+    }
 
     // Formate l'invite de saisie
-    invite = malloc(strlen("Entrez un mot de %d lettres (ENTER pour abandonner) : ")+10);
-    sprintf(invite, "Entrez un mot de %d lettres (ENTER pour abandonner) : ", LongueurDesMots);
+    sprintf(inviteSaisie, "Entrez un mot de %d lettres (ENTER pour abandonner) : ", LongueurDesMots);
 
     partieEnCours->numEssaiCourant = 0;
     do{
@@ -108,7 +124,7 @@ bool JouerPartie(struct Partie *partieEnCours){
         do{
             AfficherPartie(partieEnCours, debug);
             attron(COLOR_PAIR(COULEURS_QUESTION));
-            AfficherTexteIndenteSansRetour(invite);
+            AfficherTexteIndenteSansRetour(inviteSaisie);
             attroff(COLOR_PAIR(COULEURS_QUESTION));
             motLu = LireTexte();
 
@@ -125,20 +141,32 @@ bool JouerPartie(struct Partie *partieEnCours){
                 free(motLu);
                 return false;
             }
-
         } while (!VerifierMot(motLu));
+
 
         // Vérifie mot placé
         if (ComparerMots(partieEnCours->solution, motLu, resultat)){
             
-            // Rajoute une zone mémoire pour stocker le mot et le copie
+            // Agrandit la zone mémoire pour la liste de mots
             partieEnCours->motsEssayes = (char **)realloc(partieEnCours->motsEssayes, (partieEnCours->numEssaiCourant+1) * sizeof(char *));
-            partieEnCours->motsEssayes[partieEnCours->numEssaiCourant] = (char *)malloc(strlen(motLu) + 1);
-            strcpy(partieEnCours->motsEssayes[partieEnCours->numEssaiCourant], motLu);
-
-            // Rajoute une zone mémoire pour stocker le resultat
+            // Agrandit la zone mémoire pour la liste de structures de résultats
             partieEnCours->resultatsEssais = (struct ResultatLigne **)realloc(partieEnCours->resultatsEssais, (partieEnCours->numEssaiCourant + 1) * sizeof(struct ResultatLigne *));
+            // Vérifie les allocations mémoire
+            if (!partieEnCours->motsEssayes || !partieEnCours->resultatsEssais){
+                AfficherErreurEtTerminer("Erreur d'allocation mémoire pendant la partie", 0);
+            }
+
+            // Rajoute une zone mémoire pour stocker le mot
+            partieEnCours->motsEssayes[partieEnCours->numEssaiCourant] = (char *)malloc(strlen(motLu) + 1);
+            // Rajoute une zone mémoire pour stocker une structure de resultat
             partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant] = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+            // Vérifie les allocations mémoire
+            if (!partieEnCours->motsEssayes || !partieEnCours->resultatsEssais){
+                AfficherErreurEtTerminer("Erreur d'allocation mémoire pendant la partie", 0);
+            }
+
+            // Copie le mot et le résultat de la comparaison
+            strcpy(partieEnCours->motsEssayes[partieEnCours->numEssaiCourant], motLu);
             partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreBienPlacees = resultat->nbLettreBienPlacees;
             partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreMalPlacees = resultat->nbLettreMalPlacees;
 
@@ -184,7 +212,6 @@ bool JouerPartie(struct Partie *partieEnCours){
 
     } while (true);
 
-    free(invite);
     free(motLu);
     return true;
 }
@@ -194,8 +221,12 @@ bool JouerPartie(struct Partie *partieEnCours){
 ///        La fonction @c LireMeilleursScores() est appellée pour obtenir les meilleurs scores
 ///        Son résultat est un tableau alloué en mémoire, qu'il faut libérer a la fin
 void AfficherMeilleursScores(){
-    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
     struct Points * tabScores;
+    struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    // Vérifie l'allocation
+    if(!messageDeRetour){
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage des scores", 0);
+    }
 
     // Vérifie si le tableau des score est NULL
     if(!(tabScores = LireMeilleursScores(false, NbreDeScoresAAfficher, messageDeRetour)))
