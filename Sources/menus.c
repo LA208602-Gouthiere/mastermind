@@ -11,9 +11,14 @@
 void AfficherMenuPrincipal(int lin, int col, struct Partie * partie, struct Dictionnaire * dictionnaire){
     
     bool finPartie;
-    int choix;
+    int choix = 0;
     char * listeChoix[5] = {"Jouer", "Classement", "Règles", "Paramètres", "Quitter"};
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage du menu", 0);
+    }
     
     do {
         // Affiche le titre au dessus du menu
@@ -22,7 +27,7 @@ void AfficherMenuPrincipal(int lin, int col, struct Partie * partie, struct Dict
         AfficherTitre(lin - 10, col, false);
 
         // Vérifie l'affichage du menu
-        choix = AfficherMenu(lin, col, "Menu principal", listeChoix, 5, messageDeRetour);
+        choix = AfficherMenu(lin, col, "Menu principal", listeChoix, 5, choix, messageDeRetour);
         if (choix == -1){
             AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
         }
@@ -42,7 +47,10 @@ void AfficherMenuPrincipal(int lin, int col, struct Partie * partie, struct Dict
                 AfficherMeilleursScores();
                 break;
             case 2:
-                AfficherRegles(lin-12, col-6);
+                // Vérifie si le menu peut être affiché
+                if (!AfficherRegles(lin-12, col-6, messageDeRetour)){
+                    AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
+                }
                 break;
             case 3:
                 AfficherMenuParametres(lin, col);
@@ -59,17 +67,23 @@ void AfficherMenuPrincipal(int lin, int col, struct Partie * partie, struct Dict
 /// @param col numéro de colonne à l'origine
 void AfficherMenuParametres(int lin, int col){
 
-    int choix;
+    int choix = 0;
     char * settingsMenuChoices[3] = {"Changer les couleurs", "Réinitialiser le classement", "Retour"};
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage du menu", 0);
+    }
+
     do {
         // Vérifie l'affichage du menu
-        choix = AfficherMenu(lin, col, "Paramètres", settingsMenuChoices, 3, messageDeRetour);
+        choix = AfficherMenu(lin, col, "Paramètres", settingsMenuChoices, 3, choix, messageDeRetour);
         if (choix == -1){
             AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
         }
         
+        // Exécute l'action liée au choix
         switch (choix){
             case 0:
                 AfficherMenuCouleurs(lin, col);
@@ -88,17 +102,23 @@ void AfficherMenuParametres(int lin, int col){
 /// @param lin numéro de ligne à l'origine
 /// @param col numéro de colonne à l'origine
 void AfficherMenuCouleurs(int lin, int col){
-    int choix;
+    int choix = 0;
     char * listeChoix[3] = {"Monochrome", "Couleurs", "Retour"};
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage du menu", 0);
+    }
+
     do {
         // Vérifie l'affichage du menu
-        choix = AfficherMenu(lin, col, "Affichage des couleurs", listeChoix, 3, messageDeRetour);
+        choix = AfficherMenu(lin, col, "Affichage des couleurs", listeChoix, 3, choix, messageDeRetour);
         if (choix == -1){
             AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
         }
-        
+
+        // Exécute l'action liée au choix
         switch (choix){
             case 0:
                 ChoisirModeEcran(false);
@@ -117,12 +137,17 @@ void AfficherMenuCouleurs(int lin, int col){
 /// @param lin numéro de ligne à l'origine
 /// @param col numéro de colonne à l'origine
 void AfficherMenuConfirmationSuppressionDB(int lin, int col){
-    int choix;
+    int choix = 0;
     char * listeChoix[2] = {"Oui", "Non"};
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage du menu", 0);
+    }
+
     // Vérifie l'affichage du menu
-    choix = AfficherMenu(lin, col, "Êtes-vous sûr de supprimer les scores ?", listeChoix, 2, messageDeRetour);
+    choix = AfficherMenu(lin, col, "Êtes-vous sûr de supprimer les scores ?", listeChoix, 2, choix, messageDeRetour);
     if (choix == -1){
         AfficherErreurEtTerminer(messageDeRetour->messageErreur, messageDeRetour->codeErreur);
     }

@@ -6,13 +6,21 @@
 /// @param lin numéro de ligne à l'origine
 /// @param col numéro de colonne à l'origine
 /// @param titre titre du menu, "" si aucun
-/// @param listeChoix liste de choix du menu
+/// @param listeChoix liste des choix du menu
 /// @param nbChoix le nombre de choix
+/// @param choixSurligne le choix qui est surligné initialement, commence à 0
 /// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
 /// @return un nombre correspondant à l'option choisie, retourne -1 en cas d'erreur
-int AfficherMenu(int lin, int col, char *titre, char **listeChoix, int nbChoix, struct Dico_Message *messageDeRetour){
+int AfficherMenu(int lin, int col, char *titre, char **listeChoix, int nbChoix, int choixSurligne, struct Dico_Message *messageDeRetour){
     
     WINDOW * fenetreMenu;
+    
+    // Vérifie que le choix initial est possible
+    if (choixSurligne < 0 || choixSurligne >= nbChoix){
+        strcpy(messageDeRetour->messageErreur, "Erreur le choix initial du menu est impossible");
+        messageDeRetour->codeErreur = 0;
+        return -1;
+    }
 
     // Créé une fenêtre pour le menu (hauteur+2 pour les bordures, largeur, coordonnées)
     if(!(fenetreMenu = newwin(nbChoix+2, 58, lin, col))){
@@ -45,7 +53,6 @@ int AfficherMenu(int lin, int col, char *titre, char **listeChoix, int nbChoix, 
     // Boucle du menu, réaffiche le menu à chaque fois qu'une nouvelle option est sélectionnée
     // quitte la boucle lorsqu'une option est sélectionnée
     int toucheAppuyee;
-    int choixSurligne = 0;
     bool estDansMenu = true;
 
     while (estDansMenu) {
