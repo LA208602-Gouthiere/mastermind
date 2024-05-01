@@ -1,11 +1,6 @@
 #include "../Includes/common.h"
 #include "../Includes/ecran.h"
 
-// ***************************************//
-// FONCTIONS DECLAREES DANS LE FICHIER .h //
-// ***************************************//
-
-
 /// @brief Initialise la console ncurses
 void InitialiserEcran(){
 

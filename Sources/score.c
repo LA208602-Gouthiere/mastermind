@@ -20,7 +20,7 @@ bool ExecuterInstructionSQL(MYSQL *sqlConnection, char *instructionSQL, struct D
 /// @brief Fonction pour se connecter à la base de données en la créant si elle n'existe pas
 /// @param baseDeTest Booléen qui indique si c'est la base de donnees pour les tests unitaires ou pas (et donc: de production)
 /// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur
-/// @return Pointeur vers la structure MYSQL de la connexion
+/// @return Pointeur vers la structure MYSQL de la connexion, NULL en cas d'erreur
 MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRetour){
     
     MYSQL * sqlConnection;
@@ -49,19 +49,36 @@ MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRet
     else
         db = "la208602";
 
-    // Crée la base de données si elle n'existe pas
+    //=== Crée la base de données si elle n'existe pas ===//
     requete = (char *)malloc(strlen("CREATE DATABASE IF NOT EXISTS %s") + strlen(db) +1);
+
+    // Vérifie l'allocation mémoire
+    if(!requete){
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation mémoire lors de la connexion à la base de données");
+        messageDeRetour->codeErreur = 0;
+        return NULL;
+    }
     sprintf(requete, "CREATE DATABASE IF NOT EXISTS %s", db);
-    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour))
-        return NULL;
 
-    // Définit la DB à utiliser
-    requete = (char *)malloc(strlen("USE %s") + strlen(db) +1);
+    // Exécute et vérifie la requête
+    if(ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
+        return NULL;
+    }
+
+    //=== Définit la DB à utiliser ===//
+    requete = (char *)realloc(requete, strlen("USE %s") + strlen(db) +1);
+
+    // Vérifie l'allocation mémoire
+    if(!requete){
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation mémoire lors de la connexion à la base de données");
+        messageDeRetour->codeErreur = 0;
+        return NULL;
+    }
     sprintf(requete, "USE %s", db);
-    if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour))
+    if(ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour))
         return NULL;
 
-    // Crée la table joueurs si elle n'existe pas
+    //=== Crée la table joueurs si elle n'existe pas ===//
     if (ExecuterInstructionSQL(sqlConnection, "CREATE TABLE IF NOT EXISTS joueurs(id_joueur INT AUTO_INCREMENT, nom_joueur VARCHAR(10), score_joueur INT, PRIMARY KEY(id_joueur))", messageDeRetour))
         return NULL;
 
@@ -97,7 +114,7 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
     char * selectJoueur = "SELECT id_joueur FROM joueurs WHERE nom_joueur=TRIM('%s')"; // Trim permet de tronquer les espaces en trop
     requete = (char *)malloc(strlen(selectJoueur) + strlen(nomJoueur) +1);
 
-    // Vérifie allocation mémoire
+    // Vérifie l'allocation mémoire
     if (!requete){
         sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour le pseudo");
         messageDeRetour->codeErreur = 0;
@@ -128,7 +145,14 @@ int LireIDJoueur(MYSQL *sqlConnection, char *nomJoueur, struct Dico_Message *mes
     
     // Génère la requête
     char * insertJoueur = "INSERT INTO joueurs (nom_joueur, score_joueur) VALUES (TRIM('%s'), 0)";
-    requete = (char *)malloc(strlen(insertJoueur) + strlen(nomJoueur) +1);
+    requete = (char *)realloc(requete, strlen(insertJoueur) + strlen(nomJoueur) +1);
+
+    // Vérifie l'allocation mémoire
+    if (!requete){
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour le pseudo");
+        messageDeRetour->codeErreur = 0;
+        return -1;
+    }
     sprintf(requete, insertJoueur, nomJoueur);
 
     // Exécute la requête
@@ -155,11 +179,14 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
     int id_joueur;
     int score;
     
+    // Vérifie la connexion à la DB
     if(!(sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour))){
         return false;
     }
     
+    // Vérifie la lecture de l'identifiant joueur
     if((id_joueur = LireIDJoueur(sqlConnection, nomJoueur, messageDeRetour)) == -1){
+        mysql_close(sqlConnection);
         return false;
     }
 
@@ -168,6 +195,14 @@ bool SauverScore(bool baseDeTest, char *nomJoueur, int nombreDEssais, struct Dic
     // Ne remplace le score dans la table que s'il est inférieur au nouveau score
     char * selectJoueur = "UPDATE joueurs SET score_joueur=%d WHERE id_joueur=TRIM('%d') AND score_joueur < %d";
     char * requete = (char *)malloc(strlen(selectJoueur) + 20); // + 20 pour les valeurs
+    
+    // Vérifie l'allocation mémoire
+    if (!requete){
+        mysql_close(sqlConnection);
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour lors de la sauvegarde du score");
+        messageDeRetour->codeErreur = 0;
+        return false;
+    }
     sprintf(requete, selectJoueur, score, id_joueur, score);
 
     // Vérifie le résultat de la requête
@@ -225,7 +260,17 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
     // Récupère les n meilleurs joueurs
     char * selectJoueurs = "SELECT * FROM joueurs ORDER BY score_joueur DESC LIMIT %d";
     char * requete = (char *)malloc(strlen(selectJoueurs) + 10);
+
+    // Vérifie l'allocation mémoire
+    if (!requete){
+        mysql_close(sqlConnection);
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour lors de la sauvegarde du score");
+        messageDeRetour->codeErreur = 0;
+        return false;
+    }
     sprintf(requete, selectJoueurs, nombreDeScore);
+
+    // Exécute l'instruction
     if (ExecuterInstructionSQL(sqlConnection, requete, messageDeRetour)){
         mysql_close(sqlConnection);
         return NULL;
@@ -241,6 +286,16 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
     
     // Définit une zone mémoire pour le tableau de structures Points
     tabScores = (struct Points *)malloc(nombreDeScore * sizeof(struct Points));
+    
+    // Vérifie l'allocation mémoire
+    if (!tabScores){
+        mysql_free_result(sqlResult);
+        mysql_close(sqlConnection);
+        sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour lors de la sauvegarde du score");
+        messageDeRetour->codeErreur = 0;
+        return false;
+    }
+
     // Remplit le tableau de scores
     for (int noJoueur = 0; noJoueur < nombreDeScore; noJoueur++){
         

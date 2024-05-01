@@ -1,3 +1,13 @@
+/* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+ *       Titre: Word Mastermind                                            *
+ *      Auteur: Nicolas Gouthiere                                          *
+ *       Année: 2024                                                       *
+ * Description: Le jeu Word Mastermind développé en C pour l'UE108 (Prin-  *
+ *              cipes et langages de programmation 2). Ce projet contient  *
+ *              les fonctions pour l'affichage, la logique du jeu, la ge-  *
+ *              stion de la base de données et les tests associés.         *
+ * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+
 #include "./Includes/common.h"
 #include "./Includes/clavier.h"
 #include "./Includes/score.h"
@@ -12,17 +22,20 @@ int main(){
     struct Partie * partie;
     struct Dictionnaire * dictionnaire;
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
-    char * nomFichier;
+    char nomFichier[30];
+    
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire", 0);
+    }
     
     // Initialisation
     srand(time(NULL));
     InitialiserEcran();
 
     // Lecture du dictionnaire
-    nomFichier = malloc(strlen("liste_francais_%d.txt")+10);
     sprintf(nomFichier, "liste_francais_%d.txt", LongueurDesMots);
     dictionnaire = LireDictionnaire(nomFichier, messageDeRetour);
-    free(nomFichier);
     
     // Vérifie si le dictionnaire est bien remplis et lance la partie
     if(dictionnaire) {

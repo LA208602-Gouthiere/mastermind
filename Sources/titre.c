@@ -1,16 +1,10 @@
-#include <time.h>
+#include <unistd.h>
 #include "../Includes/common.h"
 #include "../Includes/ecran.h"
 #include "../Includes/titre.h"
 
-#ifdef _WIN32 // Portabilité du sleep
-#include <windows.h>
-#else
-#include <unistd.h>
-#endif
-
-#define FLOPPY_ANIM_SPEED 60
-#define TITLE_ANIM_SPEED 5
+#define FLOPPY_ANIM_SPEED 60000 // en microsecondes
+#define TITLE_ANIM_SPEED 5000
 
 /// @brief Affiche le splashscreen
 /// @param lin numéro de ligne à l'origine
@@ -32,10 +26,10 @@ void AfficherIntro(int lin, int col){
         attroff(COLOR_PAIR(1));
 
         AfficherLecteurDisquetteHaut(lin-4, col+4);
-        SleepMs(FLOPPY_ANIM_SPEED);
+        usleep(FLOPPY_ANIM_SPEED);
         refresh();
     }
-    SleepMs(1000);
+    usleep(1000);
     clear();
     AfficherLecteurDisquetteBas(lin-1, col+4);
 
@@ -46,7 +40,7 @@ void AfficherIntro(int lin, int col){
 
     AfficherLecteurDisquetteHaut(lin-4, col+4);
     refresh();
-    SleepMs(1000);
+    usleep(1000);
 
     // Affichage du titre
     clear();
@@ -57,16 +51,6 @@ void AfficherIntro(int lin, int col){
     // Rétabli le curseur
     curs_set(1);
     echo();
-}
-
-/// @brief met le programme en pause pendant n millisecondes
-/// @param millisecondes
-void SleepMs(int millisecondes){
-    #ifdef _WIN32
-    Sleep(millisecondes);
-    #else
-    usleep(millisecondes * 1000); // Conversion de millisecondes en microsecondes
-    #endif
 }
 
 /// @brief Affiche le dessin ascii d'une disquette
@@ -130,6 +114,11 @@ void AfficherTitre(int lin, int col, bool animation) {
     const int nbChars = nbLines*lineLength;
     struct Dico_Message *messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
 
+    // Vérifie l'allocation
+    if (!(messageDeRetour)) {
+        AfficherErreurEtTerminer("Erreur d'allocation mémoire lors de l'affichage du titre", 0);
+    }
+
     // Si l'animation doit être jouée
     attron(COLOR_PAIR(COULEURS_MOT));
     if (animation){
@@ -153,7 +142,7 @@ void AfficherTitre(int lin, int col, bool animation) {
 
             mvaddch(lin + linPos, col + colPos, title[linPos][colPos]);
             refresh();
-            SleepMs(TITLE_ANIM_SPEED);
+            usleep(TITLE_ANIM_SPEED);
         }
 
     } else {
