@@ -51,7 +51,7 @@ bool AfficherRegles(int lin, int col, struct Dico_Message *messageDeRetour){
         "années 1970. C'est la société  Invicta Plastics qui a ensuite\n"
         "commercialisé le produit tel qu'on le connait.\n\n"
         "Donald Knuth, célèbre informaticien, a développé un algorithme de\n"
-        "résolution en maximum 5 coup dans le cadre de son livre \""
+        "résolution en maximum 5 coups dans le cadre de son livre \""
         "The\nComputer as Master Mind\"."
     };
 
