@@ -10,6 +10,7 @@ int main()
     TestsDictionnaire();
     TestsComparaisonDeMots();
     TestsScores();
+    TestsNombresAleas();
 
     UNITY_END();
 

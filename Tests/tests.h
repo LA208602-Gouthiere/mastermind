@@ -5,3 +5,4 @@ void TestsVerificationDUnMot();
 void TestsDictionnaire();
 void TestsComparaisonDeMots();
 void TestsScores();
+void TestsNombresAleas();

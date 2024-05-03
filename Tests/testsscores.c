@@ -6,6 +6,7 @@
 /// donc pas d'utilisation de SetUp()
 void ViderDBDeTest(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     MYSQL * sqlConnection;
 
     // Connexion
@@ -30,6 +31,7 @@ void ViderDBDeTest(){
 // Test requête invalide
 void test_requeteInvalide(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
     bool resultat;
 
@@ -45,6 +47,7 @@ void test_connexionDB_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
 
     TEST_ASSERT_NOT_NULL(sqlConnection);
@@ -59,6 +62,7 @@ void test_ajoutJoueurs_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
     
     int id;
@@ -79,6 +83,7 @@ void test_ajoutJoueurs_longueur(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     MYSQL * sqlConnection = ConnecterBaseDeDonnees(true, messageDeRetour);
     
     int id;
@@ -100,6 +105,7 @@ void test_sauverScore_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     bool resultat;
     
     resultat = SauverScore(true, "joueur1", 9, messageDeRetour);
@@ -114,6 +120,7 @@ void test_sauverScore_longueur(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     bool resultat;
     
     resultat = SauverScore(true, "   ", 9, messageDeRetour);
@@ -131,6 +138,7 @@ void test_meilleursScores_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Points * tabScores;
     
     SauverScore(true, "joueur1", 1, messageDeRetour);
@@ -157,6 +165,7 @@ void test_supprimerScores_OK(){
     ViderDBDeTest();
 
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Points * tabScores;
     bool resultat;
     

@@ -1,9 +1,10 @@
 #include "./tests.h"
 #include "../Includes/mots.h"
 
-// Test qui vérifie (à compléter)
+// === Tests qui vérifient des mots identiques ===
 void TestComparerMots_Identiques1() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("abri", "abri", resultat));
     TEST_ASSERT_EQUAL_INT(4, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreMalPlacees);
@@ -12,6 +13,7 @@ void TestComparerMots_Identiques1() {
 
 void TestComparerMots_Identiques2() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("aaaa", "aaaa", resultat));
     TEST_ASSERT_EQUAL_INT(4, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreMalPlacees);
@@ -20,14 +22,17 @@ void TestComparerMots_Identiques2() {
 
 void TestComparerMots_Identiques3() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("zzzz", "zzzz", resultat));
     TEST_ASSERT_EQUAL_INT(4, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreMalPlacees);
     free(resultat);
 }
 
+// === Tests qui vérifient des mots différents ===
 void TestComparerMots_Differents1() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("abri", "coup", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreMalPlacees);
@@ -36,6 +41,7 @@ void TestComparerMots_Differents1() {
 
 void TestComparerMots_Differents2() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("papa", "apap", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(4, resultat->nbLettreMalPlacees);
@@ -44,6 +50,7 @@ void TestComparerMots_Differents2() {
 
 void TestComparerMots_Differents3() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("abri", "dada", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(1, resultat->nbLettreMalPlacees);
@@ -52,6 +59,7 @@ void TestComparerMots_Differents3() {
 
 void TestComparerMots_Differents4() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("dada", "abri", resultat));
     TEST_ASSERT_EQUAL_INT(0, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(1, resultat->nbLettreMalPlacees);
@@ -60,6 +68,7 @@ void TestComparerMots_Differents4() {
 
 void TestComparerMots_Differents5() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_TRUE(ComparerMots("aaaz", "zaaa", resultat));
     TEST_ASSERT_EQUAL_INT(2, resultat->nbLettreBienPlacees);
     TEST_ASSERT_EQUAL_INT(2, resultat->nbLettreMalPlacees);
@@ -68,12 +77,14 @@ void TestComparerMots_Differents5() {
 
 void TestComparerMots_Impossible1() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_FALSE(ComparerMots("abri", "abris", resultat));
     free(resultat);
 }
 
 void TestComparerMots_Impossible2() {
     struct ResultatLigne * resultat = (struct ResultatLigne*)malloc(sizeof(struct ResultatLigne));
+    TEST_ASSERT_NOT_NULL(resultat);
     TEST_ASSERT_FALSE(ComparerMots("abri", "", resultat));
     free(resultat);
 }

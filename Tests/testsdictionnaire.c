@@ -8,6 +8,7 @@
 // - Verification que les mots de la liste sont bien lus
 void TestDictionnaire_OK(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
 
     dictionnaire = LireDictionnaire("FichiersMots/liste_correcte.txt", messageDeRetour);
@@ -28,6 +29,7 @@ void TestDictionnaire_OK(){
 // et vérifie qu'il est bien NULL
 void TestDictionnaire_accents(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/liste_accents.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
@@ -36,6 +38,7 @@ void TestDictionnaire_accents(){
 
 void TestDictionnaire_longueurs(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/liste_longueurs.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
@@ -44,6 +47,7 @@ void TestDictionnaire_longueurs(){
 
 void TestDictionnaire_majuscules(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/liste_majuscules.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
@@ -52,6 +56,7 @@ void TestDictionnaire_majuscules(){
 
 void TestDictionnaire_chiffres(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/liste_chiffres.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
@@ -60,6 +65,7 @@ void TestDictionnaire_chiffres(){
 
 void TestDictionnaire_mauvaisFichier(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/fichierInexistant.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);
@@ -68,6 +74,7 @@ void TestDictionnaire_mauvaisFichier(){
 
 void TestDictionnaire_fichierVide(){
     struct Dico_Message * messageDeRetour = (struct Dico_Message *)malloc(sizeof(struct Dico_Message));
+    TEST_ASSERT_NOT_NULL(messageDeRetour);
     struct Dictionnaire * dictionnaire;
     dictionnaire = LireDictionnaire("FichiersMots/liste_vide.txt", messageDeRetour);
     TEST_ASSERT_NULL(dictionnaire);

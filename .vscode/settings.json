@@ -13,7 +13,8 @@
         "common.h": "c",
         "afficherregles.h": "c",
         "titre.h": "c",
-        "time.h": "c"
+        "time.h": "c",
+        "unity.h": "c"
     },
     "files.encoding": "utf8"
 }
