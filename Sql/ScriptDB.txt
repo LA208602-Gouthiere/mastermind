@@ -1,2 +1,3 @@
-// Ecrire ici le SCRIPT qui crée la base de donnée
-// C'est à faire même si la DB est créée dans le code
+CREATE DATABASE IF NOT EXISTS la208602;
+USE la208602;
+CREATE TABLE IF NOT EXISTS joueurs(id_joueur INT AUTO_INCREMENT, nom_joueur VARCHAR(10), score_joueur INT, PRIMARY KEY(id_joueur));
