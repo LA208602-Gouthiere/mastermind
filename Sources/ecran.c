@@ -170,7 +170,7 @@ void AfficherHautDeJeu(char * motAAfficher){
 }
 
 /// @brief Affiche un mot du jeu et son resultat
-/// @param motAAfficher 
+/// @param motAAfficher Le mot à afficher
 /// @param nbreLettresBienplacées Un '+' par lettre bien placée
 /// @param nbreLettresMalplacées Un '-' par lettre mal placée
 void AfficherMotDeJeu(char *motAAfficher, int nbreLettresBienplacées, int nbreLettresMalplacées){
@@ -214,7 +214,7 @@ void AfficherSeparateurDeJeu(){
     RetourALaLigne();
 }
 
-// Affiche la bordure inférieure du jeu
+/// @brief Affiche la bordure inférieure du jeu
 void AfficherBasDeJeu()
 {
     AfficherCharSansRetour('\t', NombreDeTabulationAGauche);

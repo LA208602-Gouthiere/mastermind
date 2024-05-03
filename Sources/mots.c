@@ -112,7 +112,7 @@ struct Dictionnaire * LireDictionnaire(char *nomDeFichier, struct Dico_Message *
 
 /// @brief Appelée en fin de partie pour libérer la mémoire du dictionnaire passé en paramètre.
 ///        Libère d'abord la mémoire des pointeurs internes puis libère la mémoire globale
-/// @param dictionnaire le ductionnaire de mots
+/// @param dictionnaire le dictionnaire de mots
 void EffacerDictionnaire(struct Dictionnaire * dictionnaire){   
     
     // Parcourt le tableau des mots pour libérer chaque espace mémoire
