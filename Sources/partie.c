@@ -67,7 +67,7 @@ void AfficherPartie(struct Partie * partieEnCours, bool modeDebug){
     AfficherHautDeJeu(modeDebug ? partieEnCours->solution : NULL);
     for (int noMot = 0; noMot < nbCases; noMot++){
         
-        AfficherMotDeJeu(partieEnCours->motsEssayes[noMot], partieEnCours->resultatsEssais[noMot]->nbLettreBienPlacees, partieEnCours->resultatsEssais[noMot]->nbLettreMalPlacees);
+        AfficherMotDeJeu(partieEnCours->motsEssayes[noMot], partieEnCours->resultatsEssais[noMot]->nbLettresBienPlacees, partieEnCours->resultatsEssais[noMot]->nbLettresMalPlacees);
         if (noMot != NbreMaxDEssais-1)
             AfficherSeparateurDeJeu();
     }
@@ -167,22 +167,22 @@ bool JouerPartie(struct Partie *partieEnCours){
 
             // Copie le mot et le résultat de la comparaison
             strcpy(partieEnCours->motsEssayes[partieEnCours->numEssaiCourant], motLu);
-            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreBienPlacees = resultat->nbLettreBienPlacees;
-            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettreMalPlacees = resultat->nbLettreMalPlacees;
+            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettresBienPlacees = resultat->nbLettresBienPlacees;
+            partieEnCours->resultatsEssais[partieEnCours->numEssaiCourant]->nbLettresMalPlacees = resultat->nbLettresMalPlacees;
 
             partieEnCours->numEssaiCourant++;
             // Lors d'une victoire ou d'une défaite
-            if (resultat->nbLettreBienPlacees == LongueurDesMots || partieEnCours->numEssaiCourant == NbreMaxDEssais){
+            if (resultat->nbLettresBienPlacees == LongueurDesMots || partieEnCours->numEssaiCourant == NbreMaxDEssais){
                 
                 // Compte le dernier essai en plus si perdu
-                if(resultat->nbLettreBienPlacees != LongueurDesMots)
+                if(resultat->nbLettresBienPlacees != LongueurDesMots)
                     partieEnCours->numEssaiCourant++;
 
                 // Saisie du pseudo
                 do {
                     AfficherPartie(partieEnCours, debug);
                     attron(COLOR_PAIR(COULEURS_QUESTION));
-                    if(resultat->nbLettreBienPlacees == LongueurDesMots){
+                    if(resultat->nbLettresBienPlacees == LongueurDesMots){
                         AfficherTexteIndenteSansRetour("Bravo ! Entrez votre pseudo (max 10 caractères) : ");
                     } else {
                         AfficherTexteIndenteSansRetour("Dommage... Le mot était \"");

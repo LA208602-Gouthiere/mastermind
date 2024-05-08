@@ -93,7 +93,7 @@ void AfficherLecteurDisquetteBas(int lin, int col){
     mvprintw(lin+3, col,"     \\___________________________________________\\|");
 }
 
-/// @brief Affiche le dess ascii du titre qui peut être animé ou nom.
+/// @brief Affiche le dessin ascii du titre qui peut être animé ou non.
 /// @param lin numéro de la ligne
 /// @param col numéro de la colonne
 /// @param animation true si l'animation doit avoir lieu sinon false

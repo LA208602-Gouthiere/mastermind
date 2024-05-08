@@ -1,17 +1,20 @@
 #ifndef _DICO_CONST
 #define _DICO_CONST
-// Structure pour stocker le dictionnaire des mots
-// Elle contient un tableau dynamique de mots et le compteur du nombre de mots
+
+
+/// @brief Structure pour stocker le dictionnaire des mots.
+///        Elle contient un tableau dynamique de mots et le compteur du nombre de mots.
 struct Dictionnaire {
     char ** listeMots;
     int nbMots;
 };
 
-// Structure pour le résultat d'un ligne contenant le nombre de lettres bien
-// placées et le nombre de lettre mal placées
+
+/// @brief Structure pour le résultat d'une ligne contenant le nombre de lettres bien
+///        placées et le nombre de lettres mal placées.
 struct ResultatLigne {
-    int nbLettreBienPlacees;
-    int nbLettreMalPlacees;
+    int nbLettresBienPlacees;
+    int nbLettresMalPlacees;
 };
 #endif
 

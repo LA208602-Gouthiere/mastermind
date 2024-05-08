@@ -34,28 +34,28 @@ void ChoisirModeEcran(bool couleur){
     }
 }
 
-/// @brief Terminer la console ncurses
+/// @brief Terminer la console ncurses.
 void TerminerEcran(){
     endwin();
 }
 
-// Efface l'écran de la console ncurses
+/// @brief Efface l'écran de la console ncurses.
 void EffacerEcran(){
     clear();
 }
 
-/// @brief Va à la ligne dans la console ncurses
+/// @brief Va à la ligne dans la console ncurses.
 void RetourALaLigne() {
     addch('\n');
 }
 
-/// @brief Affiche dans la console ncurses un texte avec indentation à partir de la position courante sans retour à la ligne
+/// @brief Affiche dans la console ncurses un texte avec indentation à partir de la position courante sans retour à la ligne.
 /// @param texteAAfficher chaine de caracteres à afficher (pointeur)
 void AfficherTexteIndenteSansRetour(char *texteAAfficher){
     printw("\t%s", texteAAfficher);
 }
 
-/// @brief Affiche une chaine de caracteres à la position courante dans la console ncurses sans retour à la ligne
+/// @brief Affiche une chaine de caracteres à la position courante dans la console ncurses sans retour à la ligne.
 /// @param texteAAfficher chaine de caracteres à afficher (pointeur)
 void AfficherTexteSansRetour(char *texteAAfficher){
     printw("%s", texteAAfficher);

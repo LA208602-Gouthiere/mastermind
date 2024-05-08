@@ -5,16 +5,14 @@
 #ifndef _DICO_PARTIE
 #define _DICO_PARTIE
 
-/*
-    La stucture contient tout le jeu en cours:
-    - solution à trouver
-    - liste des mots essayés
-    - résultats des essais
-    - nom du joureur
-    - numéro de l'essai en cours
-    - résultat: victoire (true) ou abandon (false)
-*/ 
 
+/// @brief La structure contient tout le jeu en cours:
+///        - solution à trouver
+///        - liste des mots essayés
+///        - résultats des essais
+///        - nom du joueur
+///        - numéro de l'essai en cours
+///        - résultat: victoire (true) ou abandon (false)
 struct Partie {
     char * solution;
     char ** motsEssayes;

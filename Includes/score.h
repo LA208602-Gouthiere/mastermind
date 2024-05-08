@@ -4,11 +4,12 @@
 #ifndef _DICO_SCORE
 #define _DICO_SCORE
 
-// Structure contenant le nom du joueur et son score
+/// @brief Structure contenant le nom du joueur et son score.
 struct Points {
     char nom[11];
     int score;
 };
+
 static const char *ServerDB = "127.0.0.1";
 #endif
 

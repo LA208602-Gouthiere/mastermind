@@ -2,8 +2,8 @@
 #include "../Includes/clavier.h"
 #include "../Includes/ecran.h"
 
-/// @brief Lit au clavier et renvoit une chaîne de caractères en l'affichant
-/// @return chaine de caractères
+/// @brief Lit au clavier et renvoie une chaîne de caractères en l'affichant.
+/// @return une chaine de caractères
 char * LireTexte(){
 
    int carPos;
