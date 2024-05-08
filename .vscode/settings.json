@@ -14,7 +14,8 @@
         "afficherregles.h": "c",
         "titre.h": "c",
         "time.h": "c",
-        "unity.h": "c"
+        "unity.h": "c",
+        "typeinfo": "c"
     },
     "files.encoding": "utf8"
 }

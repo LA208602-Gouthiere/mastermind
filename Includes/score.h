@@ -6,7 +6,7 @@
 
 // Structure contenant le nom du joueur et son score
 struct Points {
-    char name[11];
+    char nom[11];
     int score;
 };
 static const char *ServerDB = "127.0.0.1";

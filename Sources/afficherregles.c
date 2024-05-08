@@ -2,7 +2,7 @@
 #include "../Includes/ecran.h"
 #include "../Includes/afficherregles.h"
 
-/// @brief Affiche les règles
+/// @brief Affiche les règles dans une fenêtre, les pages peuvent être défilées avec les touches du clavier.
 /// @param lin numéro de ligne à l'origine
 /// @param col numéro de colonne à l'origine
 /// @param messageDeRetour Pointeur vers la structure pour remplir un message d'erreur et un éventuel code d'erreur

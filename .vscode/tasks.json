@@ -72,7 +72,7 @@
                 "-l",
                 "mariadb",
                 "-l",
-                "ncurses"
+                "ncursesw"
             ],
             "options": {
                 "cwd": "${workspaceFolder}"

@@ -301,10 +301,10 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
         
         if(sqlRow = mysql_fetch_row(sqlResult)){ // Si il reste des scores dans la DB
             tabScores[noJoueur].score = atoi(sqlRow[2]);
-            strcpy(tabScores[noJoueur].name, sqlRow[1]);
+            strcpy(tabScores[noJoueur].nom, sqlRow[1]);
         } else { // Sinon pointeur NULL
             tabScores[noJoueur].score = -1;
-            strcpy(tabScores[noJoueur].name, "");
+            strcpy(tabScores[noJoueur].nom, "");
         }
     }
     

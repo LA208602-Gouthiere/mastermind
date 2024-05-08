@@ -242,7 +242,7 @@ void AfficherMeilleursScores(){
     for (int noJoueur = 0; noJoueur < NbreDeScoresAAfficher; noJoueur++){
         // Si le score existe
         if(tabScores[noJoueur].score != -1){
-            AfficherTexteIndenteSansRetour(tabScores[noJoueur].name);
+            AfficherTexteIndenteSansRetour(tabScores[noJoueur].nom);
             AfficherTexteSansRetour(" : ");
             AfficherNombreSansRetour(tabScores[noJoueur].score);
             RetourALaLigne();

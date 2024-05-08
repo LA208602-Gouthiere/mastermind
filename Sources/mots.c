@@ -134,8 +134,8 @@ bool ComparerMots(char *solution, char *motPlace, struct ResultatLigne *resultat
     if (!VerifierMot(motPlace))
         return false;
 
-    int occurencesSolution[26] = {0};
-    int occurencesMotPlace[26] = {0};
+    int occurrencesSolution[26] = {0};
+    int occurrencesMotPlace[26] = {0};
 
     resultat->nbLettreBienPlacees = 0;
     resultat->nbLettreMalPlacees = 0;
@@ -147,22 +147,22 @@ bool ComparerMots(char *solution, char *motPlace, struct ResultatLigne *resultat
         if(motPlace[carPos] == solution[carPos]) {
             resultat->nbLettreBienPlacees++;
         } else {
-            // Incrémente le compteur de la lettre dans les tableaux d'occurences
-            occurencesSolution[solution[carPos] - 'a']++;
-            occurencesMotPlace[motPlace[carPos] - 'a']++;
+            // Incrémente le compteur de la lettre dans les tableaux d'occurrences
+            occurrencesSolution[solution[carPos] - 'a']++;
+            occurrencesMotPlace[motPlace[carPos] - 'a']++;
         }
     }
 
     // Compte les lettres mal placées
     for (int carPos = 0; carPos < 26; carPos++){
-        if(occurencesMotPlace[carPos] != 0 && occurencesSolution[carPos] != 0)
+        if(occurrencesMotPlace[carPos] != 0 && occurrencesSolution[carPos] != 0)
             // Prend la plus petite valeur
             // Ex: abri et dada, 1 fois a et 2 fois a, on incrémente de 1
             //     car il y a 1 lettres en commun mais mal placées
-            if (occurencesMotPlace[carPos] < occurencesSolution[carPos])
-                resultat->nbLettreMalPlacees+=occurencesMotPlace[carPos];
+            if (occurrencesMotPlace[carPos] < occurrencesSolution[carPos])
+                resultat->nbLettreMalPlacees+=occurrencesMotPlace[carPos];
             else
-                resultat->nbLettreMalPlacees+=occurencesSolution[carPos];
+                resultat->nbLettreMalPlacees+=occurrencesSolution[carPos];
 
     }
     return true;

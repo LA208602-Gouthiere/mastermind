@@ -2,7 +2,7 @@
 #include "../Includes/ecran.h"
 #include "../Includes/affichermenu.h"
 
-/// @brief Affiche un menu
+/// @brief Affiche un menu navigable avec les flèches du clavier et la touche ENTER.
 /// @param lin numéro de ligne à l'origine
 /// @param col numéro de colonne à l'origine
 /// @param titre titre du menu, "" si aucun

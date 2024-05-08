@@ -149,11 +149,11 @@ void test_meilleursScores_OK(){
     SauverScore(true, "joueur5", 8, messageDeRetour); // Le score moins bon n'est pas sensé remplacer l'ancien
 
     tabScores = LireMeilleursScores(true, 10, messageDeRetour);
-    TEST_ASSERT_EQUAL_STRING("joueur1", tabScores[0].name);
+    TEST_ASSERT_EQUAL_STRING("joueur1", tabScores[0].nom);
     TEST_ASSERT_EQUAL_INT(10, tabScores[0].score);
-    TEST_ASSERT_EQUAL_STRING("joueur5", tabScores[4].name);
+    TEST_ASSERT_EQUAL_STRING("joueur5", tabScores[4].nom);
     TEST_ASSERT_EQUAL_INT(6, tabScores[4].score);
-    TEST_ASSERT_EQUAL_STRING("", tabScores[5].name); // Lorsqu'on récupère +de joueurs qu'il n'y en a dans la DB
+    TEST_ASSERT_EQUAL_STRING("", tabScores[5].nom); // Lorsqu'on récupère +de joueurs qu'il n'y en a dans la DB
     TEST_ASSERT_EQUAL_INT(-1, tabScores[5].score);   // le nom est une chaine vide et le score vaut -1
 
     free(messageDeRetour);
@@ -184,7 +184,7 @@ void test_supprimerScores_OK(){
     // Vérifie s'il n'y a plus de joueurs dans la DB
     tabScores = LireMeilleursScores(true, 10, messageDeRetour);
     for (int noJoueur = 0; noJoueur < 10; noJoueur++){
-        TEST_ASSERT_EQUAL_STRING("", tabScores[0].name);
+        TEST_ASSERT_EQUAL_STRING("", tabScores[0].nom);
         TEST_ASSERT_EQUAL_INT(-1, tabScores[0].score);
     }
 
