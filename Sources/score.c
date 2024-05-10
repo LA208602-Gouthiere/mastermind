@@ -79,7 +79,7 @@ MYSQL *ConnecterBaseDeDonnees(bool baseDeTest, struct Dico_Message *messageDeRet
         return NULL;
 
     //=== Crée la table joueurs si elle n'existe pas ===//
-    if (ExecuterInstructionSQL(sqlConnection, "CREATE TABLE IF NOT EXISTS joueurs(id_joueur INT AUTO_INCREMENT, nom_joueur VARCHAR(10), score_joueur INT, PRIMARY KEY(id_joueur))", messageDeRetour))
+    if (ExecuterInstructionSQL(sqlConnection, "CREATE TABLE IF NOT EXISTS joueurs(id_joueur INT AUTO_INCREMENT, nom_joueur VARCHAR(10), score_joueur INT, PRIMARY KEY(id_joueur), UNIQUE(nom_joueur))", messageDeRetour))
         return NULL;
 
     free(requete);
