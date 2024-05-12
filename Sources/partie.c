@@ -218,7 +218,7 @@ bool JouerPartie(struct Partie *partieEnCours){
 
 /// @brief Fonction pour afficher les meilleurs scores
 ///        Le nombre de scores est une constante du code, on peut la modifier et recompiler
-///        La fonction @c LireMeilleursScores() est appellée pour obtenir les meilleurs scores
+///        La fonction @c LireMeilleursScores() est appelée pour obtenir les meilleurs scores
 ///        Son résultat est un tableau alloué en mémoire, qu'il faut libérer a la fin
 void AfficherMeilleursScores(){
     struct Points * tabScores;
