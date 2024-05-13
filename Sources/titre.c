@@ -51,6 +51,10 @@ void AfficherIntro(int lin, int col){
     // Rétabli le curseur
     curs_set(1);
     echo();
+
+    // Vide le buffer de tous les caractères qui sont potentiellement tapés pendant l'intro
+    // avant qu'ils soient lus par le programme
+    flushinp();
 }
 
 /// @brief Affiche le dessin ascii d'une disquette
