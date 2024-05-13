@@ -14,8 +14,8 @@ bool AfficherRegles(int lin, int col, struct Dico_Message *messageDeRetour){
     char * pages[] = {
         "1. Objectif du jeu :\n"
         "-------------------------------------------------------------------\n"
-        "Le joueur doit deviner un mot de 4 lettres choisi au hasard par le jeu\n"
-        "en maximum 10 tentatives.\n\n\n"
+        "Le joueur doit deviner un mot de 4 lettres choisi au hasard par le\n"
+        "jeu en maximum 10 tentatives.\n\n\n"
         "2. Déroulement du jeu :\n------------------------------------------------------------------\n"
         "• Le joueur propose un mot de 4 lettres.\n"
         "• Le jeu fournit des indices sous forme de + et - :\n"
