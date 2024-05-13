@@ -251,6 +251,12 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
     MYSQL_RES *sqlResult;
     MYSQL_ROW sqlRow;
     struct Points * tabScores;
+
+    if(nombreDeScore < 0){
+        sprintf(messageDeRetour->messageErreur, "Erreur le nombre de scores à afficher ne peut pas être négatif");
+        messageDeRetour->codeErreur = 0;
+        return NULL;
+    }
     
     // Vérifie connexion
     if(!(sqlConnection = ConnecterBaseDeDonnees(baseDeTest, messageDeRetour))){
@@ -266,7 +272,7 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
         mysql_close(sqlConnection);
         sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour lors de la sauvegarde du score");
         messageDeRetour->codeErreur = 0;
-        return false;
+        return NULL;
     }
     sprintf(requete, selectJoueurs, nombreDeScore);
 
@@ -293,7 +299,7 @@ struct Points * LireMeilleursScores(bool baseDeTest, int nombreDeScore, struct D
         mysql_close(sqlConnection);
         sprintf(messageDeRetour->messageErreur, "Erreur d'allocation de mémoire pour lors de la sauvegarde du score");
         messageDeRetour->codeErreur = 0;
-        return false;
+        return NULL;
     }
 
     // Remplit le tableau de scores
